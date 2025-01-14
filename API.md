@@ -47,10 +47,10 @@ if (options.contains(exeopt::log) && options[exeopt::log] == "1") {
 
 c4lib stores a representation of the save it is working on using a Boost Property Tree. Roughly
 speaking, each data member in a Beyond the Sword save is stored in a property tree node. c4lib
-generates a child node for each data-member node called "__Attributes__". Various attributes
-of the data-member node are stored as child nodes of __Attributes__.
+generates a child node for each data-member node called "\_\_Attributes__". Various attributes
+of the data-member node are stored as child nodes of \_\_Attributes__.
 
-For example, the GameVersion data member node, its __Attributes__ child, and various attributes
+For example, the GameVersion data member node, its \_\_Attributes__ child, and various attributes
 looks like this (info-format representation):
 
 ```
@@ -104,8 +104,8 @@ documentation about using Boost ptree.
 
 ### node-type.hpp
 
-node-type.hpp contains the Node_type enumeration. Node_type is used in the __Type__ child of
-the __Attributes__ node for a BTS data member. See [node-attributes.hpp](#node-attributeshpp).
+node-type.hpp contains the Node_type enumeration. Node_type is used in the \_\_Type__ child of
+the \_\_Attributes__ node for a BTS data member. See [node-attributes.hpp](#node-attributeshpp).
 
 ## Library files
 
@@ -142,20 +142,20 @@ For MSVC:
 ## Sample code
 
 [c4recover](https://github.com/hankinsohl/c4recover) is a command line program built using c4lib. In
-the c4recover sources, remove_lma
-function which resides in util.cpp uses the Boost Property Tree API to change several string
+the c4recover sources, the remove_lma
+function, which resides in util.cpp, uses the Boost Property Tree API to change several string
 variables.
 
 Although this sample is very small, it should at least be enough to get you started.
 
 ## Tips
 
-* Consider using debug options in config.xml: DEBUG_WRITE_BINARIES, DEBUG_WRITE_IMPORTS
-* If your program crashes while reading a save, examine the crash dump file
+* Consider using debug options in config.xml: DEBUG_WRITE_BINARIES, DEBUG_WRITE_IMPORTS.
+* If your program crashes while reading a save, examine the crash dump file.
 * If your program crashes while writing, use boost::property_tree::write_info
   to examine the changes you've made.
 * The c4lib libraries contain full symbol information. Download the sources to step into c4lib
   code to facilitate debugging.
 * Arrays and other compound variables within a BTS save are often preceded by a size field. When
   changing the number of items in a compound variable, you'll need to update the corresponding
-  size field in cases where a size field exists.
+  size field in cases where a size field is used.
