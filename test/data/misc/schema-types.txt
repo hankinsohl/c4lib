@@ -1,0 +1,26 @@
+// This file contains all type tokens.  It is used to test the tokenizer to ensure that all type tokens
+// are correctly parsed.
+
+bool8
+bool16
+bool32
+hex8
+hex16
+hex32
+int8
+int16
+int32
+uint8
+uint16
+uint32
+
+string
+wstring
+
+md5
+
+enum8_Enumeration
+enum16_Enumeration
+enum32_Enumeration
+struct_Structure
+template_Template

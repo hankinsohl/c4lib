@@ -1,0 +1,2057 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Schema for Unmodded Beyond the Sword Savegame Files
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// import_keyword
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// import_keyword constants from GlobalDefinesAlt.xml and GlobalDefines.xml
+import
+{
+    const MAX_TRADE_ROUTES
+}
+
+// import_keyword enumerations from XML files
+// File paths may be specified using search_path in which case the standard Civ4 XML loading algorithm applies, or
+// exact_path, in which case the exact path is used to load the corresponding XML file.	
+import 
+{ 
+    enum BonusTypes xml_path "Civ4BonusInfos/BonusInfos/BonusInfo" search_path "Terrain/CIV4BonusInfos.xml"
+    enum BuildingClassTypes xml_path "Civ4BuildingClassInfos/BuildingClassInfos/BuildingClassInfo" search_path "Buildings/CIV4BuildingClassInfos.xml"
+    enum BuildingTypes xml_path "Civ4BuildingInfos/BuildingInfos/BuildingInfo" search_path "Buildings/CIV4BuildingInfos.xml" 
+    enum BuildTypes xml_path "Civ4BuildInfos/BuildInfos/BuildInfo" search_path "Units/CIV4BuildInfos.xml"
+    enum CalendarTypes xml_path "Civ4CalendarInfos/CalendarInfos/CalendarInfo" search_path "BasicInfos/CIV4CalendarInfos.xml"
+    enum CivicOptionTypes xml_path "Civ4CivicOptionInfos/CivicOptionInfos/CivicOptionInfo" search_path "GameInfo/CIV4CivicOptionInfos.xml"
+    enum CivicTypes xml_path "Civ4CivicInfos/CivicInfos/CivicInfo" search_path "GameInfo/CIV4CivicInfos.xml"
+    enum CivilizationTypes xml_path "Civ4CivilizationInfos/CivilizationInfos/CivilizationInfo" search_path "Civilizations/CIV4CivilizationInfos.xml"
+    enum ClimateTypes xml_path "Civ4ClimateInfo/ClimateInfos/ClimateInfo" search_path "GameInfo/CIV4ClimateInfo.xml"
+    enum ColorTypes xml_path "Civ4ColorVals/ColorVals/ColorVal" search_path "Interface/CIV4ColorVals.xml"
+    enum CommerceTypes xml_path "Civ4CommerceInfo/CommerceInfos/CommerceInfo" search_path "GameInfo/CIV4CommerceInfo.xml"
+    enum CorporationTypes xml_path "Civ4CorporationInfo/CorporationInfos/CorporationInfo" search_path "GameInfo/CIV4CorporationInfo.xml"
+    enum CultureLevelTypes xml_path "Civ4CultureLevelInfo/CultureLevelInfos/CultureLevelInfo" search_path "GameInfo/CIV4CultureLevelInfo.xml"
+    enum DiploCommentTypes xml_path "Civ4DiplomacyInfos/DiplomacyInfos/DiplomacyInfo" search_path "GameInfo/CIV4DiplomacyInfos.xml"
+    enum DomainTypes xml_path "Civ4DomainInfos/DomainInfos/DomainInfo" search_path "BasicInfos/CIV4DomainInfos.xml"
+    enum EmphasizeTypes xml_path "Civ4EmphasizeInfo/EmphasizeInfos/EmphasizeInfo" search_path "GameInfo/CIV4EmphasizeInfo.xml"
+    enum EraTypes xml_path "Civ4EraInfos/EraInfos/EraInfo" search_path "GameInfo/CIV4EraInfos.xml"
+    enum EventTriggerTypes xml_path "Civ4EventTriggerInfos/EventTriggerInfos/EventTriggerInfo" search_path "Events/CIV4EventTriggerInfos.xml"
+    enum EventTypes xml_path "Civ4EventInfos/EventInfos/EventInfo" search_path "Events/CIV4EventInfos.xml"
+    enum FeatureTypes xml_path "Civ4FeatureInfos/FeatureInfos/FeatureInfo" search_path "Terrain/Civ4FeatureInfos.xml"
+    enum GameOptionTypes xml_path "Civ4GameOptionInfos/GameOptionInfos/GameOptionInfo" search_path "GameInfo/CIV4GameOptionInfos.xml"
+    enum GameSpeedTypes xml_path "Civ4GameSpeedInfo/GameSpeedInfos/GameSpeedInfo" search_path "GameInfo/CIV4GameSpeedInfo.xml"
+    enum HandicapTypes xml_path "Civ4HandicapInfo/HandicapInfos/HandicapInfo" search_path "GameInfo/CIV4HandicapInfo.xml"
+    enum HurryTypes xml_path "Civ4HurryInfo/HurryInfos/HurryInfo" search_path "GameInfo/CIV4HurryInfo.xml"
+    enum ImprovementTypes xml_path "Civ4ImprovementInfos/ImprovementInfos/ImprovementInfo" search_path "Terrain/CIV4ImprovementInfos.xml"
+    enum LeaderHeadTypes xml_path "Civ4LeaderHeadInfos/LeaderHeadInfos/LeaderHeadInfo" search_path "Civilizations/CIV4LeaderHeadInfos.xml"
+    enum MemoryTypes xml_path "Civ4MemoryInfos/MemoryInfos/MemoryInfo" search_path "BasicInfos/CIV4MemoryInfos.xml"
+    enum MissionTypes xml_path "Civ4MissionInfos/MissionInfos/MissionInfo" search_path "Units/CIV4MissionInfos.xml"
+    enum PlayerColorTypes xml_path "Civ4PlayerColorInfos/PlayerColorInfos/PlayerColorInfo" search_path "Interface/CIV4PlayerColorInfos.xml"
+    enum PlayerOptionTypes xml_path "Civ4PlayerOptionInfos/PlayerOptionInfos/PlayerOptionInfo" search_path "GameInfo/CIV4PlayerOptionInfos.xml"
+    enum ProjectTypes xml_path "Civ4ProjectInfo/ProjectInfos/ProjectInfo" search_path "GameInfo/CIV4ProjectInfo.xml"
+    enum PromotionTypes xml_path "Civ4PromotionInfos/PromotionInfos/PromotionInfo" search_path "Units/CIV4PromotionInfos.xml"
+    enum ReligionTypes xml_path "Civ4ReligionInfo/ReligionInfos/ReligionInfo" search_path "GameInfo/CIV4ReligionInfo.xml"
+    enum RouteTypes xml_path "Civ4RouteInfos/RouteInfos/RouteInfo" search_path "Misc/Civ4RouteInfos.xml"
+    enum SeaLevelTypes xml_path "Civ4SeaLevelInfo/SeaLevelInfos/SeaLevelInfo" search_path "GameInfo/CIV4SeaLevelInfo.xml"
+    enum SpecialBuildingTypes xml_path "Civ4SpecialBuildingInfos/SpecialBuildingInfos/SpecialBuildingInfo" search_path "Buildings/CIV4SpecialBuildingInfos.xml"
+    enum SpecialistTypes xml_path "Civ4SpecialistInfos/SpecialistInfos/SpecialistInfo" search_path "GameInfo/CIV4SpecialistInfos.xml"
+    enum SpecialUnitTypes xml_path "Civ4SpecialUnitInfos/SpecialUnitInfos/SpecialUnitInfo" search_path "Units/CIV4SpecialUnitInfos.xml"
+    enum TechTypes xml_path "Civ4TechInfos/TechInfos/TechInfo" search_path "Technologies/CIV4TechInfos.xml"
+    enum TerrainTypes xml_path "Civ4TerrainInfos/TerrainInfos/TerrainInfo" search_path "Terrain/CIV4TerrainInfos.xml"
+    enum TurnTimerTypes xml_path "Civ4TurnTimerInfo/TurnTimerInfos/TurnTimerInfo" search_path "GameInfo/CIV4TurnTimerInfo.xml"
+    enum UpkeepTypes xml_path "Civ4UpkeepInfo/UpkeepInfos/UpkeepInfo" search_path "GameInfo/CIV4UpkeepInfo.xml"
+    enum UnitAITypes xml_path "Civ4UnitAIInfos/UnitAIInfos/UnitAIInfo" search_path "BasicInfos/CIV4UnitAIInfos.xml"
+    enum UnitArtStyleTypes xml_path "Civ4UnitArtStyleTypeInfos/UnitArtStyleTypeInfos/UnitArtStyleTypeInfo" search_path "Civilizations/CIV4UnitArtStyleTypeInfos.xml"
+    enum UnitClassTypes xml_path "Civ4UnitClassInfos/UnitClassInfos/UnitClassInfo" search_path "Units/CIV4UnitClassInfos.xml"
+    enum UnitCombatTypes xml_path "Civ4UnitCombatInfos/UnitCombatInfos/UnitCombatInfo" search_path "BasicInfos/CIV4UnitCombatInfos.xml"
+    enum UnitTypes xml_path "Civ4UnitInfos/UnitInfos/UnitInfo" search_path "Units/CIV4UnitInfos.xml"
+    enum VictoryTypes xml_path "Civ4VictoryInfo/VictoryInfos/VictoryInfo" search_path "GameInfo/CIV4VictoryInfo.xml"
+    enum VoteSourceTypes xml_path "Civ4VoteSourceInfos/VoteSourceInfos/VoteSourceInfo" search_path "GameInfo/CIV4VoteSourceInfos.xml"
+    enum VoteTypes xml_path "Civ4VoteInfo/VoteInfos/VoteInfo" search_path "GameInfo/CIV4VoteInfo.xml"
+    enum WorldTypes xml_path "Civ4WorldInfo/WorldInfos/WorldInfo" search_path "GameInfo/CIV4WorldInfo.xml"
+    enum YieldTypes xml_path "Civ4YieldInfos/YieldInfos/YieldInfo" search_path "Terrain/CIV4YieldInfos.xml"
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Constants
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Define consts not imported 
+
+// Constants from CvDefines.h
+const MAX_PLAYERS = 19
+const MAX_TEAMS = 19
+const NUM_CITY_PLOTS = 21
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Enumerations
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Define enums not imported 
+
+// From CvEnums.h
+enum ActivityTypes
+{
+	NO_ACTIVITY = -1
+	
+	ACTIVITY_AWAKE
+	ACTIVITY_HOLD
+	ACTIVITY_SLEEP
+	ACTIVITY_HEAL
+	ACTIVITY_SENTRY
+	ACTIVITY_INTERCEPT
+	ACTIVITY_MISSION
+	ACTIVITY_PATROL
+	ACTIVITY_PLUNDER
+}
+
+// From CvEnums.h
+enum AreaAITypes					
+{
+	NO_AREAAI = -1
+	
+	AREAAI_OFFENSIVE
+	AREAAI_DEFENSIVE
+	AREAAI_MASSING
+	AREAAI_ASSAULT
+	AREAAI_ASSAULT_MASSING
+	AREAAI_ASSAULT_ASSIST
+	AREAAI_NEUTRAL
+}
+
+// From CvEnums.h
+enum AutomateTypes
+{
+	NO_AUTOMATE = -1
+
+	AUTOMATE_BUILD
+	AUTOMATE_NETWORK
+	AUTOMATE_CITY
+	AUTOMATE_EXPLORE
+	AUTOMATE_RELIGION
+}
+
+// From CvEnums.h
+enum ButtonPopupTypes
+{
+	BUTTONPOPUP_TEXT
+	BUTTONPOPUP_MAIN_MENU
+	BUTTONPOPUP_CONFIRM_MENU
+	BUTTONPOPUP_DECLAREWARMOVE
+	BUTTONPOPUP_CONFIRMCOMMAND
+	BUTTONPOPUP_LOADUNIT
+	BUTTONPOPUP_LEADUNIT
+	BUTTONPOPUP_DOESPIONAGE
+	BUTTONPOPUP_DOESPIONAGE_TARGET
+	BUTTONPOPUP_CHOOSETECH
+	BUTTONPOPUP_RAZECITY
+	BUTTONPOPUP_DISBANDCITY
+	BUTTONPOPUP_CHOOSEPRODUCTION
+	BUTTONPOPUP_CHANGECIVIC
+	BUTTONPOPUP_CHANGERELIGION
+	BUTTONPOPUP_CHOOSEELECTION
+	BUTTONPOPUP_DIPLOVOTE
+	BUTTONPOPUP_ALARM
+	BUTTONPOPUP_DEAL_CANCELED
+	BUTTONPOPUP_PYTHON
+	BUTTONPOPUP_PYTHON_SCREEN
+	BUTTONPOPUP_DETAILS
+	BUTTONPOPUP_ADMIN
+	BUTTONPOPUP_ADMIN_PASSWORD
+	BUTTONPOPUP_EXTENDED_GAME
+	BUTTONPOPUP_DIPLOMACY
+	BUTTONPOPUP_ADDBUDDY
+	BUTTONPOPUP_FORCED_DISCONNECT
+	BUTTONPOPUP_PITBOSS_DISCONNECT
+	BUTTONPOPUP_KICKED
+	BUTTONPOPUP_VASSAL_DEMAND_TRIBUTE
+	BUTTONPOPUP_VASSAL_GRANT_TRIBUTE
+	BUTTONPOPUP_EVENT
+	BUTTONPOPUP_FREE_COLONY
+	BUTTONPOPUP_LAUNCH
+	BUTTONPOPUP_FOUND_RELIGION
+}
+
+// From CvEnums.h
+enum CardinalDirectionTypes	
+{
+	NO_CARDINALDIRECTION = -1
+	
+	CARDINALDIRECTION_NORTH
+	CARDINALDIRECTION_EAST
+	CARDINALDIRECTION_SOUTH
+	CARDINALDIRECTION_WEST
+}
+
+// From CvEnums.h
+enum ChatTargetTypes
+{
+	NO_CHATTARGET = -1
+	CHATTARGET_ALL = -2
+	CHATTARGET_TEAM = -3
+}
+
+// From CvEnums.h
+enum ContactTypes	
+{
+	CONTACT_RELIGION_PRESSURE
+	CONTACT_CIVIC_PRESSURE
+	CONTACT_JOIN_WAR
+	CONTACT_STOP_TRADING
+	CONTACT_GIVE_HELP
+	CONTACT_ASK_FOR_HELP
+	CONTACT_DEMAND_TRIBUTE
+	CONTACT_OPEN_BORDERS
+	CONTACT_DEFENSIVE_PACT
+	CONTACT_PERMANENT_ALLIANCE
+	CONTACT_PEACE_TREATY
+	CONTACT_TRADE_TECH
+	CONTACT_TRADE_BONUS
+	CONTACT_TRADE_MAP
+}
+
+// From CvEnums.h
+enum DirectionTypes
+{
+	NO_DIRECTION = -1
+
+	DIRECTION_NORTH
+	DIRECTION_NORTHEAST
+	DIRECTION_EAST
+	DIRECTION_SOUTHEAST
+	DIRECTION_SOUTH
+	DIRECTION_SOUTHWEST
+	DIRECTION_WEST
+	DIRECTION_NORTHWEST
+}
+
+// From CvEnums.h
+enum FeatTypes
+{
+	FEAT_UNITCOMBAT_ARCHER
+	FEAT_UNITCOMBAT_MOUNTED
+	FEAT_UNITCOMBAT_MELEE
+	FEAT_UNITCOMBAT_SIEGE
+	FEAT_UNITCOMBAT_GUN
+	FEAT_UNITCOMBAT_ARMOR
+	FEAT_UNITCOMBAT_HELICOPTER
+	FEAT_UNITCOMBAT_NAVAL
+	FEAT_UNIT_PRIVATEER
+	FEAT_UNIT_SPY
+	FEAT_NATIONAL_WONDER
+	FEAT_TRADE_ROUTE
+	FEAT_COPPER_CONNECTED
+	FEAT_HORSE_CONNECTED
+	FEAT_IRON_CONNECTED
+	FEAT_LUXURY_CONNECTED
+	FEAT_FOOD_CONNECTED
+	FEAT_POPULATION_HALF_MILLION
+	FEAT_POPULATION_1_MILLION
+	FEAT_POPULATION_2_MILLION
+	FEAT_POPULATION_5_MILLION
+	FEAT_POPULATION_10_MILLION
+	FEAT_POPULATION_20_MILLION
+	FEAT_POPULATION_50_MILLION
+	FEAT_POPULATION_100_MILLION
+	FEAT_POPULATION_200_MILLION
+	FEAT_POPULATION_500_MILLION
+	FEAT_POPULATION_1_BILLION
+	FEAT_POPULATION_2_BILLION
+	FEAT_CORPORATION_ENABLED
+	FEAT_PAD
+}
+
+// From CvEnums.h
+enum GameStateTypes
+{
+	GAMESTATE_ON
+	GAMESTATE_OVER
+	GAMESTATE_EXTENDED
+}
+
+// From CvEnums.h
+enum GameType
+{
+	GAME_NONE = -1
+
+	GAME_SP_NEW
+	GAME_SP_SCENARIO
+	GAME_SP_LOAD
+	GAME_MP_NEW
+	GAME_MP_SCENARIO
+	GAME_MP_LOAD
+	GAME_HOTSEAT_NEW
+	GAME_HOTSEAT_SCENARIO
+	GAME_HOTSEAT_LOAD
+	GAME_PBEM_NEW
+	GAME_PBEM_SCENARIO
+	GAME_PBEM_LOAD
+	GAME_REPLAY
+}
+
+// From CvEnums.h
+enum InterfaceMessageTypes
+{
+	NO_MESSAGE_TYPE = -1
+
+	MESSAGE_TYPE_INFO
+	MESSAGE_TYPE_DISPLAY_ONLY
+	MESSAGE_TYPE_MAJOR_EVENT
+	MESSAGE_TYPE_MINOR_EVENT
+	MESSAGE_TYPE_CHAT
+	MESSAGE_TYPE_COMBAT_MESSAGE
+	MESSAGE_TYPE_QUEST
+}
+
+// From CvEnums.h
+enum MissionAITypes
+{
+	NO_MISSIONAI = -1
+
+	MISSIONAI_SHADOW
+	MISSIONAI_GROUP
+	MISSIONAI_LOAD_ASSAULT
+	MISSIONAI_LOAD_SETTLER
+	MISSIONAI_LOAD_SPECIAL
+	MISSIONAI_GUARD_CITY
+	MISSIONAI_GUARD_BONUS
+	MISSIONAI_GUARD_TRADE_NET
+	MISSIONAI_GUARD_SPY
+	MISSIONAI_ATTACK_SPY
+	MISSIONAI_SPREAD
+	MISSIONAI_SPREAD_CORPORATION
+	MISSIONAI_CONSTRUCT
+	MISSIONAI_HURRY
+	MISSIONAI_GREAT_WORK
+	MISSIONAI_EXPLORE
+	MISSIONAI_BLOCKADE
+	MISSIONAI_PILLAGE
+	MISSIONAI_FOUND
+	MISSIONAI_BUILD
+	MISSIONAI_ASSAULT
+	MISSIONAI_CARRIER
+	MISSIONAI_PICKUP
+}
+
+// From CvEnums.h
+enum MultiplayerOptionTypes
+{
+	NO_MPOPTION = -1
+
+	MPOPTION_SIMULTANEOUS_TURNS
+	MPOPTION_TAKEOVER_AI
+	MPOPTION_SHUFFLE_TEAMS
+	MPOPTION_ANONYMOUS
+	MPOPTION_TURN_TIMER
+}
+
+// From CvEnums.h
+enum OrderTypes	
+{
+	NO_ORDER = -1
+
+	ORDER_TRAIN
+	ORDER_CONSTRUCT
+	ORDER_CREATE
+	ORDER_MAINTAIN
+}
+
+// From CvEnums.h
+enum PlayerVoteTypes
+{
+	NO_PLAYER_VOTE_CHECKED = -6
+	PLAYER_VOTE_NEVER = -5
+	PLAYER_VOTE_ABSTAIN = -4
+	PLAYER_VOTE_NO = -3
+	PLAYER_VOTE_YES = -2
+	NO_PLAYER_VOTE = -1
+}
+
+// From CvEnums.h
+enum PlotTypes
+{
+	NO_PLOT = -1
+
+	PLOT_PEAK
+	PLOT_HILLS
+	PLOT_LAND
+	PLOT_OCEAN
+}
+
+// From CvEnums.h
+enum ReplayMessageTypes
+{
+	NO_REPLAY_MESSAGE = -1
+
+	REPLAY_MESSAGE_MAJOR_EVENT
+	REPLAY_MESSAGE_CITY_FOUNDED
+	REPLAY_MESSAGE_PLOT_OWNER_CHANGE
+}
+
+// From CvEnums.h
+enum SlotClaim
+{
+	SLOTCLAIM_UNASSIGNED
+	SLOTCLAIM_RESERVED
+	SLOTCLAIM_ASSIGNED
+}
+
+// From CvEnums.h
+enum SlotStatus
+{
+    SS_NONE = -1          // Added for consistency
+
+	SS_OPEN
+	SS_COMPUTER
+	SS_CLOSED
+	SS_TAKEN
+	SS_MAX_SLOT_STATUS
+}
+
+// From CvEnums.h.  Enumerators added to improve output appearance
+enum TeamTypes
+{
+    TEAM_0 = 0
+    TEAM_1 = 1
+	TEAM_2 = 2
+	TEAM_3 = 3
+	TEAM_4 = 4
+	TEAM_5 = 5
+	TEAM_6 = 6
+	TEAM_7 = 7
+	TEAM_8 = 8
+	TEAM_9 = 9
+	TEAM_10 = 10
+	TEAM_11 = 11
+	TEAM_12 = 12
+	TEAM_13 = 13
+	TEAM_14 = 14
+	TEAM_15 = 15
+	TEAM_16 = 16
+	TEAM_17 = 17
+	BARBARIAN_TEAM = 18
+}
+
+// From CvEnums.h
+enum TradeableItems
+{
+	TRADE_ITEM_NONE = -1
+
+	TRADE_GOLD
+	TRADE_GOLD_PER_TURN
+	TRADE_MAPS
+	TRADE_VASSAL
+	TRADE_SURRENDER
+	TRADE_OPEN_BORDERS
+	TRADE_DEFENSIVE_PACT
+	TRADE_PERMANENT_ALLIANCE
+	TRADE_PEACE_TREATY
+	TRADE_TECHNOLOGIES
+	TRADE_RESOURCES
+	TRADE_CITIES
+	TRADE_PEACE
+	TRADE_WAR
+	TRADE_EMBARGO
+	TRADE_CIVIC
+	TRADE_RELIGION
+}
+
+// From FVariableSystem.h
+enum eVariableType
+{
+    FVARTYPE_NONE = -1          // Added for consistency
+
+    FVARTYPE_BOOL = 0			// Boolean value
+	FVARTYPE_CHAR = 1			// One byte int_type (signed)
+	FVARTYPE_UCHAR = 2			// One byte int_type (unsigned)
+	FVARTYPE_SHORT = 3			// Two byte int_type (signed)
+	FVARTYPE_USHORT = 4			// Two byte int_type (unsigned)
+	FVARTYPE_INT = 5			// Four byte int_type (signed)
+	FVARTYPE_UINT = 6			// Four byte int_type (unsigned)
+	FVARTYPE_FLOAT = 7			// Four byte floating point number
+	FVARTYPE_DOUBLE = 8			// Eight byte floating point number
+	FVARTYPE_STRING = 9			// string_type data (uses FString)
+	FVARTYPE_WSTRING = 10       // string_type data (uses FStringW)  
+}
+
+// From CvEnums.h
+enum WarPlanTypes
+{
+	NO_WARPLAN = -1
+
+	WARPLAN_ATTACKED_RECENT
+	WARPLAN_ATTACKED
+	WARPLAN_PREPARING_LIMITED
+	WARPLAN_PREPARING_TOTAL
+	WARPLAN_LIMITED
+	WARPLAN_TOTAL
+	WARPLAN_DOGPILE
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Templates
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Array<T> is not defined in the SDK but is introduced here for convenience
+template Array<T>
+{
+    int32 Length
+	T[Length] Data
+}
+
+// CLinkList<T> has the same binary representation as Array<T>
+Array alias CLinkList
+
+template FreeListTrashArray<T>
+{
+    int32 NumSlots
+    int32 LastIndex
+    int32 FreeListHead
+	int32 FreeListCount
+	int32 CurrentID
+	int32[NumSlots] NextFreeIndex
+
+    int32 Count
+	T[Count] Data  
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Structures
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// BuildingChangeData is not defined in the SDK but is introduced here for convenience
+struct BuildingChangeData
+{
+    enum32_BuildingClassTypes BuildingClass
+	int32 BuildingChange
+}
+
+struct BuildingCommerceChange
+{
+	enum32_BuildingClassTypes BuildingClass
+	enum32_CommerceTypes Commerce
+	int32 Change
+}
+
+struct BuildingYieldChange
+{
+    enum32_BuildingClassTypes BuildingClass
+	enum32_YieldTypes Yield
+	int32 Change
+}
+
+// CultureRangeCitiesData is not defined in the SDK but is introduced here for convenience.
+struct CultureRangeCitiesData
+{
+	int32 Length
+	int8[Length:PlayerTypes] CultureRangeCities
+}
+
+struct CvArea
+{	
+	uint32 Flag
+
+	int32 ID
+	int32 NumTiles
+	int32 NumOwnedTiles
+	int32 NumRiverEdges
+	int32 NumUnits
+	int32 NumCities
+	int32 TotalPopulation
+	int32 NumStartingPlots
+
+	bool8 Water
+
+	int32[MAX_PLAYERS:PlayerTypes] UnitsPerPlayer
+	int32[MAX_PLAYERS:PlayerTypes] AnimalsPerPlayer
+	int32[MAX_PLAYERS:PlayerTypes] CitiesPerPlayer
+	int32[MAX_PLAYERS:PlayerTypes] PopulationPerPlayer
+	int32[MAX_PLAYERS:PlayerTypes] BuildingGoodHealth
+	int32[MAX_PLAYERS:PlayerTypes] BuildingBadHealth
+	int32[MAX_PLAYERS:PlayerTypes] BuildingHappiness
+	int32[MAX_PLAYERS:PlayerTypes] FreeSpecialist
+	int32[MAX_PLAYERS:PlayerTypes] Power
+	int32[MAX_PLAYERS:PlayerTypes] BestFoundValue
+	int32[MAX_TEAMS:TeamTypes] NumRevealedTiles
+	int32[MAX_TEAMS:TeamTypes] CleanPowerCount
+	int32[MAX_TEAMS:TeamTypes] BorderObstacleCount
+
+	enum32_AreaAITypes[MAX_TEAMS:TeamTypes] AreaAIType
+
+	struct_IdInfo[MAX_PLAYERS:PlayerTypes] TargetCities
+
+	int32[MAX_PLAYERS:PlayerTypes][NUM_YIELD_TYPES:YieldTypes] YieldRateModifier
+	int32[MAX_PLAYERS:PlayerTypes][NUM_UNIT_AITYPES:UnitAITypes] NumTrainAIUnits
+	int32[MAX_PLAYERS:PlayerTypes][NUM_UNIT_AITYPES:UnitAITypes] NumAIUnits
+
+	int32[NUM_BONUS_TYPES:BonusTypes] NumBonuses
+	int32[NUM_IMPROVEMENT_TYPES:ImprovementTypes] NumImprovements
+}
+
+struct CvCity
+{
+	uint32 Flag
+
+	int32 ID
+	int32 X
+	int32 Y
+	int32 RallyX
+	int32 RallyY
+	int32 GameTurnFounded
+	int32 GameTurnAcquired
+	int32 Population
+	int32 HighestPopulation
+	int32 WorkingPopulation
+	int32 SpecialistPopulation
+	int32 NumGreatPeople
+	int32 BaseGreatPeopleRate
+	int32 GreatPeopleRateModifier
+	int32 GreatPeopleProgress
+	int32 NumWorldWonders
+	int32 NumTeamWonders
+	int32 NumNationalWonders
+	int32 NumBuildings
+	int32 GovernmentCenterCount
+	int32 Maintenance
+	int32 MaintenanceModifier
+	int32 WarWearinessModifier
+	int32 HurryAngerModifier
+	int32 HealRate
+	int32 EspionageHealthCounter
+	int32 EspionageHappinessCounter
+	int32 FreshWaterGoodHealth
+	int32 FreshWaterBadHealth
+	int32 FeatureGoodHealth
+	int32 FeatureBadHealth
+	int32 BuildingGoodHealth
+	int32 BuildingBadHealth
+	int32 PowerGoodHealth
+	int32 PowerBadHealth
+	int32 BonusGoodHealth
+	int32 BonusBadHealth
+	int32 HurryAngerTimer
+	int32 ConscriptAngerTimer
+	int32 DefyResolutionAngerTimer
+	int32 HappinessTimer
+	int32 MilitaryHappinessUnits
+	int32 BuildingGoodHappiness
+	int32 BuildingBadHappiness
+	int32 ExtraBuildingGoodHappiness
+	int32 ExtraBuildingBadHappiness
+	int32 ExtraBuildingGoodHealth
+	int32 ExtraBuildingBadHealth
+	int32 FeatureGoodHappiness
+	int32 FeatureBadHappiness
+	int32 BonusGoodHappiness
+	int32 BonusBadHappiness
+	int32 ReligionGoodHappiness
+	int32 ReligionBadHappiness
+	int32 ExtraHappiness
+	int32 ExtraHealth
+	int32 NoUnhappinessCount
+	int32 NoUnhealthyPopulationCount
+	int32 BuildingOnlyHealthyCount
+	int32 Food
+	int32 FoodKept
+	int32 MaxFoodKeptPercent
+	int32 OverflowProduction
+	int32 FeatureProduction
+	int32 MilitaryProductionModifier
+	int32 SpaceProductionModifier
+	int32 ExtraTradeRoutes
+	int32 TradeRouteModifier
+	int32 ForeignTradeRouteModifier
+	int32 BuildingDefense
+	int32 BuildingBombardDefense
+	int32 FreeExperience
+	int32 CurrAirlift
+	int32 MaxAirlift
+	int32 AirModifier
+	int32 AirUnitCapacity
+	int32 NukeModifier
+	int32 FreeSpecialist
+	int32 PowerCount
+	int32 DirtyPowerCount
+	int32 DefenseDamage
+	int32 LastDefenseDamage
+	int32 OccupationTimer
+	int32 CultureUpdateTimer
+	int32 CitySizeBoost
+	int32 SpecialistFreeExperience
+	int32 EspionageDefenseModifier
+
+	bool8 NeverLost
+	bool8 Bombarded
+	bool8 Drafted
+	bool8 AirliftTargeted
+	bool8 WeLoveTheKingDay
+	bool8 CitizensAutomated
+	bool8 ProductionAutomated
+	bool8 WallOverride
+	bool8 Plundered
+
+	enum32_PlayerTypes Owner
+	enum32_PlayerTypes PreviousOwner
+	enum32_PlayerTypes OriginalOwner
+	enum32_CultureLevelTypes CultureLevel
+
+	int32[NUM_YIELD_TYPES:YieldTypes] SeaPlotYield
+	int32[NUM_YIELD_TYPES:YieldTypes] RiverPlotYield
+	int32[NUM_YIELD_TYPES:YieldTypes] BaseYieldRate
+	int32[NUM_YIELD_TYPES:YieldTypes] YieldRateModifier
+	int32[NUM_YIELD_TYPES:YieldTypes] PowerYieldRateModifier
+	int32[NUM_YIELD_TYPES:YieldTypes] BonusYieldRateModifier
+	int32[NUM_YIELD_TYPES:YieldTypes] TradeYield
+	int32[NUM_YIELD_TYPES:YieldTypes] CorporationYield
+	int32[NUM_YIELD_TYPES:YieldTypes] ExtraSpecialistYield
+	int32[NUM_COMMERCE_TYPES:CommerceTypes] CommerceRate
+	int32[NUM_COMMERCE_TYPES:CommerceTypes] ProductionToCommerceModifier
+	int32[NUM_COMMERCE_TYPES:CommerceTypes] BuildingCommerce
+	int32[NUM_COMMERCE_TYPES:CommerceTypes] SpecialistCommerce
+	int32[NUM_COMMERCE_TYPES:CommerceTypes] ReligionCommerce
+	int32[NUM_COMMERCE_TYPES:CommerceTypes] CorporationCommerce
+	int32[NUM_COMMERCE_TYPES:CommerceTypes] CommerceRateModifier
+	int32[NUM_COMMERCE_TYPES:CommerceTypes] CommerceHappinessPer
+	int32[NUM_DOMAIN_TYPES:DomainTypes] DomainFreeExperience
+	int32[NUM_DOMAIN_TYPES:DomainTypes] DomainProductionModifier
+	int32[MAX_PLAYERS:PlayerTypes] Culture
+	int32[MAX_PLAYERS:PlayerTypes] NumRevolts
+
+	bool8[MAX_PLAYERS:PlayerTypes] EverOwned
+	bool8[MAX_PLAYERS:PlayerTypes] TradeRoute
+	bool8[MAX_TEAMS:TeamTypes] Revealed
+	bool8[MAX_TEAMS:TeamTypes] EspionageVisibility
+
+	wstring_type Name
+	string_type ScriptData
+
+	int32[NUM_BONUS_TYPES:BonusTypes] NoBonus 
+	int32[NUM_BONUS_TYPES:BonusTypes] FreeBonus 
+	int32[NUM_BONUS_TYPES:BonusTypes] NumBonuses 
+	int32[NUM_BONUS_TYPES:BonusTypes] NumCorpProducedBonuses 
+	int32[NUM_PROJECT_TYPES:ProjectTypes] ProjectProduction 
+	int32[NUM_BUILDING_TYPES:BuildingTypes] BuildingProduction 
+	int32[NUM_BUILDING_TYPES:BuildingTypes] BuildingProductionTime 
+	int32[NUM_BUILDING_TYPES:BuildingTypes] BuildingOriginalOwner 
+	int32[NUM_BUILDING_TYPES:BuildingTypes] BuildingOriginalTime 
+	int32[NUM_UNIT_TYPES:UnitTypes] UnitProduction 
+	int32[NUM_UNIT_TYPES:UnitTypes] UnitProductionTime 
+	int32[NUM_UNIT_TYPES:UnitTypes] GreatPeopleUnitRate 
+	int32[NUM_UNIT_TYPES:UnitTypes] GreatPeopleUnitProgress 
+	int32[NUM_SPECIALIST_TYPES:SpecialistTypes] SpecialistCount 
+	int32[NUM_SPECIALIST_TYPES:SpecialistTypes] MaxSpecialistCount
+	int32[NUM_SPECIALIST_TYPES:SpecialistTypes] ForceSpecialistCount
+	int32[NUM_SPECIALIST_TYPES:SpecialistTypes] FreeSpecialistCount
+	int32[NUM_IMPROVEMENT_TYPES:ImprovementTypes] ImprovementFreeSpecialists 
+	int32[NUM_RELIGION_TYPES:ReligionTypes] ReligionInfluence 
+	int32[NUM_RELIGION_TYPES:ReligionTypes] StateReligionHappiness 
+	int32[NUM_UNIT_COMBAT_TYPES:UnitCombatTypes] UnitCombatFreeExperience 
+	int32[NUM_PROMOTION_TYPES:PromotionTypes] FreePromotionCount 
+	int32[NUM_BUILDING_TYPES:BuildingTypes] NumRealBuilding 
+	int32[NUM_BUILDING_TYPES:BuildingTypes] NumFreeBuilding 
+
+	bool8[NUM_CITY_PLOTS] WorkingPlot
+	bool8[NUM_RELIGION_TYPES:ReligionTypes] HasReligion
+	bool8[NUM_CORPORATION_TYPES:CorporationTypes] HasCorporation
+
+    struct_IdInfo[MAX_TRADE_ROUTES] TradeCities
+
+	template_CLinkList<struct_OrderData> OrderQueue
+
+	int32 PopulationRank
+	bool8 PopulationRankValid
+	int32[NUM_YIELD_TYPES:YieldTypes] BaseYieldRank
+	bool8[NUM_YIELD_TYPES:YieldTypes] BaseYieldRankValid
+	int32[NUM_YIELD_TYPES:YieldTypes] YieldRank
+	bool8[NUM_YIELD_TYPES:YieldTypes] YieldRankValid
+	int32[NUM_COMMERCE_TYPES:CommerceTypes] CommerceRank
+	bool8[NUM_COMMERCE_TYPES:CommerceTypes] CommerceRankValid
+
+	int32 NumEltsEventsOccured
+	enum32_EventTypes[NumEltsEventsOccured] EventsOccured
+
+	int32 NumEltsBuildingYieldChange
+	struct_BuildingYieldChange[NumEltsBuildingYieldChange] BuildingYieldChange
+
+	int32 NumEltsBuildingCommerceChange
+	struct_BuildingCommerceChange[NumEltsBuildingCommerceChange] BuildingCommerceChange
+
+	int32 NumEltsBuildingHappyChange
+	struct_BuildingChangeData[NumEltsBuildingHappyChange] BuildingHappyChange
+
+	int32 NumEltsBuildingHealthChange
+	struct_BuildingChangeData[NumEltsBuildingHealthChange] BuildingHealthChange
+}
+
+struct CvCityAI
+{
+	struct_CvCity CvCity
+
+	uint32 Flag
+
+	int32 EmphasizeAvoidGrowthCount
+	int32 EmphasizeGreatPeopleCount
+	bool8 AssignWorkDirty
+	bool8 ChooseProductionDirty
+
+	struct_IdInfo RouteToCity
+
+	int32[NUM_YIELD_TYPES:YieldTypes] EmphasizeYieldCount
+	int32[NUM_COMMERCE_TYPES:CommerceTypes] EmphasizeCommerceCount
+	bool8 ForceEmphasizeCulture
+	int32[NUM_CITY_PLOTS] BestBuildValue
+	enum32_BuildTypes[NUM_CITY_PLOTS] BestBuild
+	bool8[NUM_EMPHASIZE_TYPES:EmphasizeTypes] Emphasize
+	int32[NUM_YIELD_TYPES:YieldTypes] SpecialYieldMultiplier
+	int32 CachePlayerClosenessTurn
+	int32 CachePlayerClosenessDistance
+	int32[MAX_PLAYERS:PlayerTypes] PlayerCloseness
+	int32 NeededFloatingDefenders
+	int32 NeededFloatingDefendersCacheTurn
+	int32 WorkersNeeded
+	int32 WorkersHave
+}
+
+struct CvDeal
+{
+    uint32 Flag
+
+	int32 ID
+	int32 InitialGameTurn
+
+	enum32_PlayerTypes FirstPlayer
+	enum32_PlayerTypes SecondPlayer
+
+	template_CLinkList<struct_TradeData> FirstTrades
+	template_CLinkList<struct_TradeData> SecondTrades
+}
+
+struct CvDiploParameters
+{
+	uint32 Flag
+
+	enum32_PlayerTypes WhoTalkingTo
+	enum32_DiploCommentTypes CommentType
+	template_CLinkList<struct_TradeData> OurOffer
+	template_CLinkList<struct_TradeData> TheirOffer
+	bool8 Renegotiate
+	bool8 AIContact
+	int32 Data
+	bool8 HumanDiplo
+	bool8 OurOffering
+	bool8 TheirOffering
+	wstring_type ChatText
+
+	int32 Size
+	struct_FVariable[Size] DiploCommentArgs
+}
+
+struct CvEventReporter
+{
+	struct_CvStatistics Statistics
+}
+
+struct CvGame
+{
+	uint32 Flag
+
+	if (Flag < 1)
+	{
+		int32 EndTurnMessagesSent
+	}
+	int32 ElapsedGameTurns
+	int32 StartTurn
+	int32 StartYear
+	int32 EstimateEndTurn
+	int32 TurnSlice
+	int32 CutoffSlice
+	int32 NumGameTurnActive
+	int32 NumCities
+	int32 TotalPopulation
+	int32 TradeRoutes
+	int32 FreeTradeCount
+	int32 NoNukesCount
+	int32 NukesExploded
+	int32 MaxPopulation
+	int32 MaxLand
+	int32 MaxTech
+	int32 MaxWonders
+	int32 InitPopulation
+	int32 InitLand
+	int32 InitTech
+	int32 InitWonders
+	int32 AIAutoPlay
+
+	bool8 ScoreDirty
+	bool8 Circumnavigated
+	bool8 FinalInitialized
+	bool8 HotPbemBetweenTurns
+	bool8 NukesValid
+
+	enum32_HandicapTypes Handicap
+	enum32_PlayerTypes PausePlayer
+	enum32_UnitTypes BestLandUnit
+	enum32_TeamTypes Winner
+	enum32_VictoryTypes Victory
+	enum32_GameStateTypes GameState
+
+	string_type ScriptData
+
+	if (Flag < 1)
+	{
+	    int32 EndTurnMessagesReceived
+	}
+	enum32_PlayerTypes[MAX_PLAYERS] RankPlayer // Players ordered by rank
+	int32[MAX_PLAYERS:PlayerTypes] PlayerRank // Ranks ordered by player ID
+	int32[MAX_PLAYERS:PlayerTypes] PlayerScore  // Scores ordered by player ID
+	
+	int32[MAX_TEAMS] RankTeam // Teams ordered by rank
+	int32[MAX_TEAMS:TeamTypes] TeamRank // Ranks ordered by team ID
+	int32[MAX_TEAMS:TeamTypes] TeamScore  // Scores ordered by team ID
+
+	int32[NUM_UNIT_TYPES:UnitTypes] UnitCreatedCount
+	int32[NUM_UNIT_CLASS_TYPES:UnitClassTypes] UnitClassCreatedCount
+	int32[NUM_BUILDING_CLASS_TYPES:BuildingClassTypes] BuildingClassCreatedCount
+	int32[NUM_PROJECT_TYPES:ProjectTypes] ProjectCreatedCount
+	int32[NUM_CIVIC_TYPES:CivicTypes] ForceCivicCount
+	int32[NUM_VOTE_TYPES:VoteTypes] VoteOutcome
+	int32[NUM_RELIGION_TYPES:ReligionTypes] ReligionGameTurnFounded
+	int32[NUM_CORPORATION_TYPES:CorporationTypes] CorporationGameTurnFounded
+	int32[NUM_VOTE_SOURCE_TYPES:VoteSourceTypes] SecretaryGeneralTimer
+	int32[NUM_VOTE_SOURCE_TYPES:VoteSourceTypes] VoteTimer
+	int32[NUM_VOTE_SOURCE_TYPES:VoteSourceTypes] DiploVote
+
+	bool8[NUM_SPECIAL_UNIT_TYPES:SpecialUnitTypes] SpecialUnitValid
+	bool8[NUM_SPECIAL_BUILDING_TYPES:SpecialBuildingTypes] SpecialBuildingValid
+	bool8[NUM_RELIGION_TYPES:ReligionTypes] ReligionSlotTaken
+
+	struct_IdInfo[NUM_RELIGION_TYPES:ReligionTypes] HolyCity
+
+	struct_IdInfo[NUM_CORPORATION_TYPES:CorporationTypes] Headquarters
+
+    uint32 DestroyedCitiesSize
+	wstring_type[DestroyedCitiesSize] DestroyedCities
+	
+	uint32 GreatPeopleBornSize
+	wstring_type[GreatPeopleBornSize] GreatPeopleBorn
+
+    template_FreeListTrashArray<struct_CvDeal> Deals
+	template_FreeListTrashArray<struct_VoteSelectionData> VoteSelections
+	template_FreeListTrashArray<struct_VoteTriggeredData> VotesTriggered
+		
+	struct_CvRandom mapRand
+	struct_CvRandom sorenRand
+
+    uint32 ReplayMessagesSize
+    struct_CvReplayMessage[ReplayMessagesSize] ReplayMessages
+
+	int32 NumSessions
+
+    int32 SizePlotExtraYields
+	struct_PlotExtraYield[SizePlotExtraYields] PlotExtraYields
+
+    int32 SizePlotExtraCosts
+	struct_PlotExtraCost[SizePlotExtraCosts] PlotExtraCosts
+
+    int32 SizeVoteSourceReligions
+	struct_VoteSourceReligion[SizeVoteSourceReligions] VoteSourceReligion
+
+    int32 SizeInactiveTriggers
+	enum32_EventTriggerTypes[SizeInactiveTriggers] InactiveTriggers
+
+    int32 ShrineBuildingCount  // Always seems to be 7
+	// Note: NUM_BUILDING_TYPES should probably have been ShrineBuildingCount instead.  This appears
+	// to be a bug in the Civ4 sources.
+	int32[NUM_BUILDING_TYPES] ShrineBuilding  // Possibly unused.  Array always seems to be [80, 84, 88, 92, 96, 100, 104, -1, ..., -1]
+	int32[NUM_BUILDING_TYPES] ShrineReligion  // Possibly unused.  Array always seems to be [0, 1, 2, 3, 4, 5, 6, -1, ..., -1]
+	int32 NumCultureVictoryCities
+	enum32_CultureLevelTypes CultureVictoryCultureLevel
+}
+
+struct CvGameAI
+{
+	uint32 Flag
+	int32 Pad
+	// Compressed data begins at CvGame
+	struct_CvGame CvGame
+}
+
+struct CvGameRecord
+{
+    uint32 Flag
+
+    enum32_EraTypes Era
+	
+	string MapName
+}
+
+struct CvInitCore
+{
+    uint32 SaveFlag
+	
+	enum32_GameType Type
+	wstring_type GameName
+	wstring_type GamePassword
+	wstring_type AdminPassword
+	wstring_type MapScriptName
+	bool8 WBMapNoPlayers
+	
+	enum32_WorldTypes WorldSize
+	enum32_ClimateTypes Climate
+	enum32_SeaLevelTypes SeaLevel
+	enum32_EraTypes Era
+	enum32_GameSpeedTypes GameSpeed
+	enum32_TurnTimerTypes TurnTimer
+	enum32_CalendarTypes Calendar
+	
+	int32 NumCustomMapOptions
+	int32 NumHiddenCustomMapOptions
+	// CustomMapOptions is actually an Array of CustomMapOptionType enum_type values as defined in a
+	// custom map script.  CustomMapOptions is defined below as an Array of int32 to avoid having
+	// to define the CustomMapOptionsType enum based on the map script.	
+	int32[NumCustomMapOptions] CustomMapOptions
+
+	int32 NumVictories
+	bool8[NumVictories:VictoryTypes] Victories
+	
+	// Note: c4lib uses Options to obtain the number of game option types.  Do not rename this field.
+	bool8[NUM_GAME_OPTION_TYPES:GameOptionTypes] Options
+	// Note: c4lib uses MPOptions to obtain the number of multiplayer option types.  Do not rename this field.
+	bool8[NUM_MULTIPLAYER_OPTION_TYPES:MultiplayerOptionTypes] MPOptions
+	bool8 StatReporting
+	
+	int32 GameTurn
+	int32 MaxTurns
+	int32 PitbossTurnTime
+	int32 iTargetScore	
+	
+	int32 MaxCityElimination
+	int32 NumAdvancedStartPoints
+
+	// Note: c4lib uses LeaderName to obtain MAX_PLAYERS.  Do not rename this field.
+	wstring_type[MAX_PLAYERS] LeaderName
+	wstring_type[MAX_PLAYERS] CivDescription
+	wstring_type[MAX_PLAYERS] CivShortDesc
+	wstring_type[MAX_PLAYERS] CivAdjective
+	wstring_type[MAX_PLAYERS] CivPassword
+	string_type[MAX_PLAYERS] Email
+	string_type[MAX_PLAYERS] SmtpHost
+
+	bool8[MAX_PLAYERS] WhiteFlag
+	wstring_type[MAX_PLAYERS] m_aszFlagDecal
+
+    // The following arrays map game players to civilization and leader types.  Do not change
+	// the name of the Leader array because the parser uses this array to generate
+	// the PlayerTypes enumeration.
+	enum32_CivilizationTypes[MAX_PLAYERS] Civ
+	enum32_LeaderHeadTypes[MAX_PLAYERS] Leader
+	// The following Array maps game teams to team types.  MAX_PLAYERS is used in the SDK
+	// so it is used here; MAX_TEAMS should have been used in the SDK instead
+	enum32_TeamTypes[MAX_PLAYERS] Team
+
+	enum32_HandicapTypes[MAX_PLAYERS:PlayerTypes] Handicap
+	enum32_PlayerColorTypes[MAX_PLAYERS:PlayerTypes] Color
+	enum32_UnitArtStyleTypes[MAX_PLAYERS:PlayerTypes] ArtStyle
+
+	enum32_SlotStatus[MAX_PLAYERS:PlayerTypes] SlotStatus
+	enum32_SlotClaim[MAX_PLAYERS:PlayerTypes] SlotClaim
+	
+	bool8[MAX_PLAYERS:PlayerTypes] PlayableCiv
+	bool8[MAX_PLAYERS:PlayerTypes] MinorNationCiv
+}
+
+struct CvMap
+{
+    uint32 Flag
+
+    // CvMap, as written to disk, contains 8 undocumented bytes following Flag
+    hex32[2] UndocumentedData
+	
+	int32 GridWidth
+	int32 GridHeight
+	int32 LandPlots
+	int32 OwnedPlots
+	int32 TopLatitude
+	int32 BottomLatitude
+	int32 NextRiverID
+
+	bool8 WrapX
+	bool8 WrapY
+
+    int32[NUM_BONUS_TYPES:BonusTypes] NumBonus
+	int32[NUM_BONUS_TYPES:BonusTypes] NumBonusOnLand
+
+    struct_CvPlot[GridWidth * GridHeight] MapPlots
+	
+	template_FreeListTrashArray<struct_CvArea> Areas
+}
+
+struct CvPlayer
+{
+	uint32 Flag
+
+	int32 StartingX
+	int32 StartingY
+	int32 TotalPopulation
+	int32 TotalLand
+	int32 TotalLandScored
+	int32 Gold
+	int32 GoldPerTurn
+	int32 AdvancedStartPoints
+	int32 GoldenAgeTurns
+	int32 NumUnitGoldenAges
+	int32 StrikeTurns
+	int32 AnarchyTurns
+	int32 MaxAnarchyTurns
+	int32 AnarchyModifier
+	int32 GoldenAgeModifier
+	int32 GlobalHurryModifier
+	int32 GreatPeopleCreated
+	int32 GreatGeneralsCreated
+	int32 GreatPeopleThresholdModifier
+	int32 GreatGeneralsThresholdModifier
+	int32 GreatPeopleRateModifier
+	int32 GreatGeneralRateModifier
+	int32 DomesticGreatGeneralRateModifier
+	int32 StateReligionGreatPeopleRateModifier
+	int32 MaxGlobalBuildingProductionModifier
+	int32 MaxTeamBuildingProductionModifier
+	int32 MaxPlayerBuildingProductionModifier
+	int32 FreeExperience
+	int32 FeatureProductionModifier
+	int32 WorkerSpeedModifier
+	int32 ImprovementUpgradeRateModifier
+	int32 MilitaryProductionModifier
+	int32 SpaceProductionModifier
+	int32 CityDefenseModifier
+	int32 NumNukeUnits
+	int32 NumOutsideUnits
+	int32 BaseFreeUnits
+	int32 BaseFreeMilitaryUnits
+	int32 FreeUnitsPopulationPercent
+	int32 FreeMilitaryUnitsPopulationPercent
+	int32 GoldPerUnit
+	int32 GoldPerMilitaryUnit
+	int32 ExtraUnitCost
+	int32 NumMilitaryUnits
+	int32 HappyPerMilitaryUnit
+	int32 MilitaryFoodProductionCount
+	int32 ConscriptCount
+	int32 MaxConscript
+	int32 HighestUnitLevel
+	int32 OverflowResearch
+	int32 NoUnhealthyPopulationCount
+	int32 ExpInBorderModifier
+	int32 BuildingOnlyHealthyCount
+	int32 DistanceMaintenanceModifier
+	int32 NumCitiesMaintenanceModifier
+	int32 CorporationMaintenanceModifier
+	int32 TotalMaintenance
+	int32 UpkeepModifier
+	int32 LevelExperienceModifier
+	int32 ExtraHealth
+	int32 BuildingGoodHealth
+	int32 BuildingBadHealth
+	int32 ExtraHappiness
+	int32 BuildingHappiness
+	int32 LargestCityHappiness
+	int32 WarWearinessPercentAnger
+	int32 WarWearinessModifier
+	int32 FreeSpecialist
+	int32 NoForeignTradeCount
+	int32 NoCorporationsCount
+	int32 NoForeignCorporationsCount
+	int32 CoastalTradeRoutes
+	int32 TradeRoutes
+	int32 RevolutionTimer
+	int32 ConversionTimer
+	int32 StateReligionCount
+	int32 NoNonStateReligionSpreadCount
+	int32 StateReligionHappiness
+	int32 NonStateReligionHappiness
+	int32 StateReligionUnitProductionModifier
+	int32 StateReligionBuildingProductionModifier
+	int32 StateReligionFreeExperience
+	int32 CapitalCityID
+	int32 CitiesLost
+	int32 WinsVsBarbs
+	int32 Assets
+	int32 Power
+	int32 PopulationScore
+	int32 LandScore
+	int32 WondersScore
+	int32 TechScore
+	int32 CombatExperience
+
+	bool8 Alive
+	bool8 EverAlive
+	bool8 TurnActive
+	bool8 AutoMoves
+	bool8 EndTurn
+	bool8 PbemNewTurn
+	bool8 ExtendedGame
+	bool8 FoundedFirstCity
+	bool8 Strike
+
+	enum32_PlayerTypes ID
+	enum32_LeaderHeadTypes PersonalityType
+	enum32_EraTypes CurrentEra
+	enum32_ReligionTypes LastStateReligion
+	enum32_PlayerTypes Parent
+
+	int32[NUM_YIELD_TYPES:YieldTypes] SeaPlotYield
+	int32[NUM_YIELD_TYPES:YieldTypes] YieldRateModifier
+	int32[NUM_YIELD_TYPES:YieldTypes] CapitalYieldRateModifier
+	int32[NUM_YIELD_TYPES:YieldTypes] ExtraYieldThreshold
+	int32[NUM_YIELD_TYPES:YieldTypes] TradeYieldModifier
+	int32[NUM_COMMERCE_TYPES:CommerceTypes] FreeCityCommerce
+	int32[NUM_COMMERCE_TYPES:CommerceTypes] CommercePercent
+	int32[NUM_COMMERCE_TYPES:CommerceTypes] CommerceRate
+	int32[NUM_COMMERCE_TYPES:CommerceTypes] CommerceRateModifier
+	int32[NUM_COMMERCE_TYPES:CommerceTypes] CapitalCommerceRateModifier
+	int32[NUM_COMMERCE_TYPES:CommerceTypes] StateReligionBuildingCommerce
+	int32[NUM_COMMERCE_TYPES:CommerceTypes] SpecialistExtraCommerce
+	int32[NUM_COMMERCE_TYPES:CommerceTypes] CommerceFlexibleCount
+	int32[MAX_PLAYERS:PlayerTypes] GoldPerTurnByPlayer
+	int32[MAX_TEAMS:TeamTypes] EspionageSpendingWeightAgainstTeam
+
+	bool8[NUM_FEAT_TYPES:FeatTypes] FeatAccomplished
+	bool8[NUM_PLAYER_OPTION_TYPES:PlayerOptionTypes] Options
+
+	string_type ScriptData
+
+	int32[NUM_BONUS_TYPES:BonusTypes] BonusExport
+	int32[NUM_BONUS_TYPES:BonusTypes] BonusImport
+	int32[NUM_IMPROVEMENT_TYPES:ImprovementTypes] ImprovementCount
+	int32[NUM_BUILDING_TYPES:BuildingTypes] FreeBuildingCount
+	int32[NUM_BUILDING_TYPES:BuildingTypes] ExtraBuildingHappiness
+	int32[NUM_BUILDING_TYPES:BuildingTypes] ExtraBuildingHealth
+	int32[NUM_FEATURE_TYPES:FeatureTypes] FeatureHappiness
+	int32[NUM_UNIT_CLASS_TYPES:UnitClassTypes] UnitClassCount
+	int32[NUM_UNIT_CLASS_TYPES:UnitClassTypes] UnitClassMaking
+	int32[NUM_BUILDING_CLASS_TYPES:BuildingClassTypes] BuildingClassCount
+	int32[NUM_BUILDING_CLASS_TYPES:BuildingClassTypes] BuildingClassMaking
+	int32[NUM_HURRY_TYPES:HurryTypes] HurryCount
+	int32[NUM_SPECIAL_BUILDING_TYPES:SpecialBuildingTypes] SpecialBuildingNotRequiredCount
+	int32[NUM_CIVIC_OPTION_TYPES:CivicOptionTypes] HasCivicOptionCount
+	int32[NUM_CIVIC_OPTION_TYPES:CivicOptionTypes] NoCivicUpkeepCount
+	int32[NUM_RELIGION_TYPES:ReligionTypes] HasReligionCount
+	int32[NUM_CORPORATION_TYPES:CorporationTypes] HasCorporationCount
+	int32[NUM_UPKEEP_TYPES:UpkeepTypes] UpkeepCount
+	int32[NUM_SPECIALIST_TYPES:SpecialistTypes] SpecialistValidCount
+
+	bool8[NUM_TECH_TYPES:TechTypes] ResearchingTech
+
+	bool8[NUM_VOTE_SOURCE_TYPES:VoteSourceTypes] LoyalMember
+
+	enum32_CivicTypes[NUM_CIVIC_OPTION_TYPES] Civics
+
+	int32[NUM_SPECIALIST_TYPES:SpecialistTypes][NUM_YIELD_TYPES:YieldTypes] SpecialistExtraYield
+
+	int32[NUM_IMPROVEMENT_TYPES:ImprovementTypes][NUM_YIELD_TYPES:YieldTypes] ImprovementYieldChange
+
+	template_CLinkList<int32> GroupCycle
+	template_CLinkList<enum32_TechTypes> ResearchQueue
+
+	uint32 Size
+	wstring_type[Size] CityNames
+
+	template_FreeListTrashArray<struct_CvPlotGroup> PlotGroups
+	template_FreeListTrashArray<struct_CvCityAI> Cities
+	template_FreeListTrashArray<struct_CvUnitAI> Units
+	template_FreeListTrashArray<struct_CvSelectionGroupAI> SelectionGroups	
+	template_FreeListTrashArray<struct_EventTriggeredData> EventsTriggered	
+
+    int32 SizeListGameMessages
+	struct_CvTalkingHeadMessage[SizeListGameMessages] ListGameMessages
+
+	int32 SizeListPopups
+	struct_CvPopupInfo[SizeListPopups] ListPopups
+
+	int32 SizeListDiplomacy
+	struct_CvDiploParameters[SizeListDiplomacy] ListDiplomacy
+	
+	uint32 SizeMapScoreHistory
+	struct_ScoreHistoryData[SizeMapScoreHistory] MapScoreHistory
+
+	uint32 SizeMapEconomyHistory
+	struct_ScoreHistoryData[SizeMapEconomyHistory] MapEconomyHistory
+
+	uint32 SizeMapIndustryHistory
+	struct_ScoreHistoryData[SizeMapIndustryHistory] MapIndustryHistory
+
+	uint32 SizeMapAgricultureHistory
+	struct_ScoreHistoryData[SizeMapAgricultureHistory] MapAgricultureHistory
+
+	uint32 SizeMapPowerHistory
+	struct_ScoreHistoryData[SizeMapPowerHistory] MapPowerHistory
+
+	uint32 SizeMapCultureHistory
+	struct_ScoreHistoryData[SizeMapCultureHistory] MapCultureHistory
+
+	uint32 SizeMapEspionageHistory
+	struct_ScoreHistoryData[SizeMapEspionageHistory] MapEspionageHistory
+
+	uint32 SizeMapEventsOccured
+	struct_EventAndEventTriggeredData[SizeMapEventsOccured] MapEventsOccured
+
+	uint32 SizeMapEventCountdown
+	struct_EventAndEventTriggeredData[SizeMapEventCountdown] MapEventCountdown	
+
+	uint32 SizeFreeUnitCombatPromotionsArray
+	struct_UnitCombatPromotionData[SizeFreeUnitCombatPromotionsArray] FreeUnitCombatPromotions
+
+	uint32 SizeFreeUnitClassPromotionsArray
+	struct_UnitClassPromotionData[SizeFreeUnitClassPromotionsArray] FreeUnitClassPromotions
+
+	uint32 SizeVoteVector
+	struct_PlayerVoteData[SizeVoteVector] Vote
+
+	uint32 SizeUnitExtraCostsVector
+	struct_UnitClassCostData[SizeUnitExtraCostsVector] UnitExtraCosts
+
+	if (Flag > 0)
+	{
+	    uint32 SizeTriggersFiredVector
+		enum32_EventTriggerTypes[SizeTriggersFiredVector] TriggersFired
+	}
+	else
+	{
+	    // Note: The SDK is coded such that the actual Array size is std::min(176, GC.getNumEventTriggerInfos())
+		// The schema language does not support syntax so we'll simply set the Array size to NUM_EVENT_TRIGGER_TYPES.
+		// It's unlikely that this code will ever fail (it would require an epic savegame from the initial release and
+		// then for the code to fail, NUM_EVENT_TRIGGER_TYPES would have had to be modded and greater than 176.
+	    bool8[NUM_EVENT_TRIGGER_TYPES:EventTriggerTypes] TriggersFired
+	}
+
+
+	int32 PopRushHurryCount
+	int32 InflationModifier
+}
+	
+struct CvPlayerAI
+{
+	struct_CvPlayer CvPlayer
+
+    uint32 Flag
+
+	int32 PeaceWeight
+	int32 EspionageWeight
+	int32 AttackOddsChange
+	int32 CivicTimer
+	int32 ReligionTimer
+	int32 ExtraGoldTarget
+
+	int32 StrategyHash
+	int32 StrategyHashCacheTurn
+	int32 AveragesCacheTurn
+	int32 AverageGreatPeopleMultiplier
+
+	int32[NUM_YIELD_TYPES:YieldTypes] AverageYieldMultiplier
+	int32[NUM_COMMERCE_TYPES:CommerceTypes] AverageCommerceMultiplier
+	int32[NUM_COMMERCE_TYPES:CommerceTypes] AverageCommerceExchange
+
+	int32 UpgradeUnitsCacheTurn
+	int32 UpgradeUnitsCachedExpThreshold
+	int32 UpgradeUnitsCachedGold
+
+	int32[NUM_UNIT_AITYPES:UnitAITypes] NumTrainAIUnits
+	int32[NUM_UNIT_AITYPES:UnitAITypes] NumAIUnits
+	int32[MAX_PLAYERS:PlayerTypes] SameReligionCounter
+	int32[MAX_PLAYERS:PlayerTypes] DifferentReligionCounter
+	int32[MAX_PLAYERS:PlayerTypes] FavoriteCivicCounter
+	int32[MAX_PLAYERS:PlayerTypes] BonusTradeCounter
+	int32[MAX_PLAYERS:PlayerTypes] PeacetimeTradeValue
+	int32[MAX_PLAYERS:PlayerTypes] PeacetimeGrantValue
+	int32[MAX_PLAYERS:PlayerTypes] GoldTradedTo
+	int32[MAX_PLAYERS:PlayerTypes] AttitudeExtra
+
+	bool8[MAX_PLAYERS:PlayerTypes] FirstContact
+
+    int32[MAX_PLAYERS:PlayerTypes][NUM_CONTACT_TYPES:ContactTypes] ContactTimer
+	int32[MAX_PLAYERS:PlayerTypes][NUM_MEMORY_TYPES:MemoryTypes] MemoryCount
+
+	bool8 WasFinancialTrouble
+	int32 TurnLastProductionDirty
+	
+	uint32 Size
+	int32[Size] AICitySites
+
+	int32[NUM_BONUS_TYPES:BonusTypes] BonusValue
+	int32[NUM_UNIT_CLASS_TYPES:UnitClassTypes] UnitClassWeights
+	int32[NUM_UNIT_COMBAT_TYPES:UnitCombatTypes] UnitCombatWeights
+	int32[MAX_PLAYERS:PlayerTypes] CloseBordersAttitudeCache
+}
+
+struct CvPlayerRecord
+{
+	uint32 Flag
+
+	int32 ID
+	int32 Time
+
+	enum32_VictoryTypes Victory
+	enum32_LeaderHeadTypes Leader
+
+	int32[NUM_UNIT_TYPES:UnitTypes] NumUnitsBuilt
+	int32[NUM_UNIT_TYPES:UnitTypes] NumUnitsKilled
+	int32[NUM_UNIT_TYPES:UnitTypes] NumUnitsWasKilled
+	int32[NUM_BUILDING_TYPES:BuildingTypes] NumBuildingsBuilt
+	bool8[NUM_RELIGION_TYPES:ReligionTypes] ReligionFounded
+
+	int32 NumCitiesBuilt
+	int32 NumCitiesRazed
+	int32 NumGoldenAges
+}
+
+struct CvPlot
+{
+	uint32 Flag
+	
+	int16 X
+	int16 Y
+
+	int32 Area
+	
+	int16 FeatureVariety
+	int16 OwnershipDuration
+	int16 ImprovementDuration
+	int16 UpgradeProgress
+	int16 ForceUnownedTimer
+	int16 CityRadiusCount
+	int32 RiverID
+	int16 iMinOriginalStartDist
+	int16 iReconCount
+	int16 iRiverCrossingCount
+	
+	bool8 StartingPlot 
+	bool8 Hills 
+	bool8 NOfRiver 
+	bool8 WOfRiver 
+	bool8 Irrigated 
+	bool8 PotentialCityWork 
+
+	enum8_PlayerTypes Owner
+	enum16_PlotTypes PlotType
+	enum16_TerrainTypes TerrainType
+	enum16_FeatureTypes FeatureType
+	enum16_BonusTypes BonusType
+	enum16_ImprovementTypes ImprovementType
+	enum16_RouteTypes RouteType
+	enum8_CardinalDirectionTypes RiverNSDirection
+	enum8_CardinalDirectionTypes RiverWEDirection
+
+	struct_IdInfo PlotCity
+	struct_IdInfo WorkingCity
+	struct_IdInfo WorkingCityOverride
+
+    int16[NUM_YIELD_TYPES:YieldTypes] Yield
+
+	int8 CultureCount
+	int32[CultureCount:PlayerTypes] Culture
+	
+	int8 FoundValueCount
+	int16[FoundValueCount:PlayerTypes] FoundValue
+
+	int8 PlayerCityRadiusCountCount
+	int8[PlayerCityRadiusCountCount:PlayerTypes] PlayerCityRadiusCount
+
+	int8 PlotGroupCount
+	int32[PlotGroupCount:PlayerTypes] PlotGroup
+
+	int8 VisibilityCountCount
+	int16[VisibilityCountCount:PlayerTypes] VisibilityCount
+
+    int8 StolenVisibilityCountCount
+	int16[StolenVisibilityCountCount:PlayerTypes] StolenVisibilityCount
+
+    int8 BlockadedCountCount
+	int16[BlockadedCountCount:PlayerTypes] BlockadedCount
+
+    int8 RevealedOwnerCount
+	int8[RevealedOwnerCount:PlayerTypes] RevealedOwner
+
+    int8 RiverCrossingCount
+	bool8[RiverCrossingCount:PlayerTypes] RiverCrossing
+
+    int8 RevealedCount
+	bool8[RevealedCount:PlayerTypes] Revealed
+
+    int8 RevealedImprovementTypeCount
+	int16[RevealedImprovementTypeCount:PlayerTypes] RevealedImprovementType
+
+    int8 RevealedRouteTypeCount
+	enum16_RouteTypes[RevealedRouteTypeCount:PlayerTypes] RevealedRouteType
+
+	string_type ScriptData
+
+    int32 BuildProgressCount
+	int16[BuildProgressCount:BuildTypes] BuildProgress
+
+    int8 CultureRangeCitiesCount
+	struct_CultureRangeCitiesData[CultureRangeCitiesCount:PlayerTypes] CultureRangeCities
+	
+	int8 InvisibleVisibilities
+	struct_InvisibleVisibilityCountData[InvisibleVisibilities:PlayerTypes] InvisibleVisibilityCount
+	
+	template_CLinkList<struct_IdInfo> Units
+}
+
+struct CvPlotGroup
+{
+	uint32 Flag
+
+	int32 ID
+
+	enum32_PlayerTypes Owner
+
+	int32[NUM_BONUS_TYPES:BonusTypes] NumBonuses
+
+	template_CLinkList<struct_XYCoords> Plots
+}
+
+struct CvPopupButtonPython
+{
+    wstring_type Text
+	string_type Art
+}
+
+struct CvPopupInfo
+{
+	int32 Data1
+	int32 Data2
+	int32 Data3
+	int32 Flags
+	bool8 Option1
+	bool8 Option2
+
+	enum32_ButtonPopupTypes ButtonPopupType
+	wstring_type Text
+
+	string_type OnFocusPythonCallback
+	string_type OnClickedPythonCallback
+	string_type PythonModule
+	
+	uint32 Size
+	struct_CvPopupButtonPython[Size] PythonButtons
+}
+
+struct CvRandom
+{
+    uint32 RandomSeed
+}
+
+struct CvReplayMessage
+{
+    int32 Turn
+	enum32_ReplayMessageTypes Type
+	
+    int32 PlotX
+	int32 PlotY
+
+    enum32_PlayerTypes Player
+
+    wstring_type Text
+	enum32_ColorTypes Color
+}
+
+struct CvSelectionGroup
+{
+	uint32 Flag
+
+	int32 ID
+	int32 MissionTimer
+
+	bool8 ForceUpdate
+
+	enum32_PlayerTypes Owner
+	enum32_ActivityTypes ActivityType
+	enum32_AutomateTypes AutomateType
+
+	template_CLinkList<struct_IdInfo> Units
+	template_CLinkList<struct_MissionData> MissionQueue
+}
+
+struct CvSelectionGroupAI
+{
+	struct_CvSelectionGroup CvSelectionGroup
+
+	uint32 Flag
+
+	int32 MissionAIX
+	int32 MissionAIY
+
+	bool8 ForceSeparate
+
+	enum32_MissionAITypes MissionAIType
+
+	struct_IdInfo MissionAIUnit
+
+	bool8 GroupAttack
+	int32 GroupAttackX
+	int32 GroupAttackY
+}
+
+struct CvStatistics
+{
+	struct_CvGameRecord GameRecord
+
+	for (i = 0; i < MAX_PLAYERS; i = i + 1)
+	{
+		if (Savegame.CvPlayerAI.[i].CvPlayer.EverAlive)
+		{
+			struct_CvPlayerRecord PlayerRecord
+		}
+	}
+}
+
+struct CvTalkingHeadMessage
+{
+	wstring_type Description
+	string_type Sound
+	string_type Icon
+	int32 Length
+	enum32_ColorTypes FlashColor
+	int32 FlashX
+	int32 FlashY
+	bool8 OffScreenArrows
+	bool8 OnScreenArrows
+	int32 Turn
+	enum32_InterfaceMessageTypes MessageType
+	enum32_PlayerTypes FromPlayer
+	enum32_ChatTargetTypes Target
+	bool8 Shown
+}
+
+struct CvTeam
+{
+	uint32 Flag
+
+	int32 NumMembers
+	int32 AliveCount
+	int32 EverAliveCount
+	int32 NumCities
+	int32 TotalPopulation
+	int32 TotalLand
+	int32 NukeInterception
+	int32 ExtraWaterSeeFromCount
+	int32 MapTradingCount
+	int32 TechTradingCount
+	int32 GoldTradingCount
+	int32 OpenBordersTradingCount
+	int32 DefensivePactTradingCount
+	int32 PermanentAllianceTradingCount
+	int32 VassalTradingCount
+	int32 BridgeBuildingCount
+	int32 IrrigationCount
+	int32 IgnoreIrrigationCount
+	int32 WaterWorkCount
+	int32 VassalPower
+	int32 MasterPower
+	int32 EnemyWarWearinessModifier
+	int32 RiverTradeCount
+	int32 EspionagePointsEver
+
+	bool8 MapCentering
+	bool8 Capitulated
+
+    enum32_TeamTypes ID
+
+	int32[MAX_TEAMS:TeamTypes] StolenVisibilityTimer
+	int32[MAX_TEAMS:TeamTypes] WarWeariness
+	int32[MAX_TEAMS:TeamTypes] TechShareCount
+	int32[MAX_TEAMS:TeamTypes] EspionagePointsAgainstTeam
+	int32[MAX_TEAMS:TeamTypes] CounterespionageTurnsLeftAgainstTeam
+	int32[MAX_TEAMS:TeamTypes] CounterespionageModAgainstTeam
+	int32[NUM_COMMERCE_TYPES:CommerceTypes] CommerceFlexibleCount
+	int32[NUM_DOMAIN_TYPES:DomainTypes] ExtraMoves
+	int32[NUM_VOTE_SOURCE_TYPES:VoteSourceTypes] ForceTeamVoteEligibilityCount
+
+	bool8[MAX_TEAMS:TeamTypes] HasMet
+	bool8[MAX_TEAMS:TeamTypes] AtWar
+	bool8[MAX_TEAMS:TeamTypes] PermanentWarPeace
+	bool8[MAX_TEAMS:TeamTypes] OpenBorders
+	bool8[MAX_TEAMS:TeamTypes] DefensivePact
+	bool8[MAX_TEAMS:TeamTypes] ForcePeace
+	bool8[MAX_TEAMS:TeamTypes] Vassal
+	bool8[NUM_VICTORY_TYPES:VictoryTypes] CanLaunch
+
+	int32[NUM_ROUTE_TYPES:RouteTypes] RouteChange
+	int32[NUM_PROJECT_TYPES:ProjectTypes] ProjectCount
+	int32[NUM_PROJECT_TYPES:ProjectTypes] ProjectDefaultArtTypes
+	
+	int32[NUM_PROJECT_TYPES:ProjectTypes:capture_index][ProjectCount[use_capture]] ProjectArtTypes
+
+	int32[NUM_PROJECT_TYPES:ProjectTypes] ProjectMaking
+	int32[NUM_UNIT_CLASS_TYPES:UnitClassTypes] UnitClassCount
+	int32[NUM_BUILDING_CLASS_TYPES:BuildingClassTypes] BuildingClassCount
+	int32[NUM_BUILDING_TYPES:BuildingTypes] ObsoleteBuildingCount
+	int32[NUM_TECH_TYPES:TechTypes] ResearchProgress
+	int32[NUM_TECH_TYPES:TechTypes] TechCount
+	int32[NUM_TERRAIN_TYPES:TerrainTypes] TerrainTradeCount
+	int32[NUM_VICTORY_TYPES:VictoryTypes] VictoryCountdown
+
+	bool8[NUM_TECH_TYPES:TechTypes] HasTech
+	bool8[NUM_TECH_TYPES:TechTypes] NoTradeTech
+
+	int32[NUM_IMPROVEMENT_TYPES:ImprovementTypes][NUM_YIELD_TYPES:YieldTypes] ImprovementYieldChange
+
+	int32 Size
+	enum32_BonusTypes[Size] RevealedBonuses
+}
+
+struct CvTeamAI
+{
+	struct_CvTeam CvTeam
+
+	uint32 Flag
+
+	int32[MAX_TEAMS:TeamTypes] WarPlanStateCounter
+	int32[MAX_TEAMS:TeamTypes] AtWarCounter
+	int32[MAX_TEAMS:TeamTypes] AtPeaceCounter
+	int32[MAX_TEAMS:TeamTypes] HasMetCounter
+	int32[MAX_TEAMS:TeamTypes] OpenBordersCounter
+	int32[MAX_TEAMS:TeamTypes] DefensivePactCounter
+	int32[MAX_TEAMS:TeamTypes] ShareWarCounter
+	int32[MAX_TEAMS:TeamTypes] WarSuccess
+	int32[MAX_TEAMS:TeamTypes] EnemyPeacetimeTradeValue
+	int32[MAX_TEAMS:TeamTypes] EnemyPeacetimeGrantValue
+
+	enum32_WarPlanTypes[MAX_TEAMS:TeamTypes] WarPlan
+	
+	enum32_TeamTypes WorstEnemy
+}
+
+struct CvUnit
+{
+	uint32 Flag
+
+	int32 ID
+	int32 GroupID
+	int32 HotKeyNumber
+	int32 X
+	int32 Y
+	int32 LastMoveTurn
+	int32 ReconX
+	int32 ReconY
+	int32 GameTurnCreated
+	int32 Damage
+	int32 Moves
+	int32 Experience
+	int32 Level
+	int32 Cargo
+	int32 CargoCapacity
+	int32 AttackPlotX
+	int32 AttackPlotY
+	int32 CombatTimer
+	int32 CombatFirstStrikes
+	if (Flag < 2)
+	{
+		int32 CombatDamage
+	}
+	int32 FortifyTurns
+	int32 BlitzCount
+	int32 AmphibCount
+	int32 RiverCount
+	int32 EnemyRouteCount
+	int32 AlwaysHealCount
+	int32 HillsDoubleMoveCount
+	int32 ImmuneToFirstStrikesCount
+	int32 ExtraVisibilityRange
+	int32 ExtraMoves
+	int32 ExtraMoveDiscount
+	int32 ExtraAirRange
+	int32 ExtraIntercept
+	int32 ExtraEvasion
+	int32 ExtraFirstStrikes
+	int32 ExtraChanceFirstStrikes
+	int32 ExtraWithdrawal
+	int32 ExtraCollateralDamage
+	int32 ExtraBombardRate
+	int32 ExtraEnemyHeal
+	int32 ExtraNeutralHeal
+	int32 ExtraFriendlyHeal
+	int32 SameTileHeal
+	int32 AdjacentTileHeal
+	int32 ExtraCombatPercent
+	int32 ExtraCityAttackPercent
+	int32 ExtraCityDefensePercent
+	int32 ExtraHillsAttackPercent
+	int32 ExtraHillsDefensePercent
+	int32 RevoltProtection
+	int32 CollateralDamageProtection
+	int32 PillageChange
+	int32 UpgradeDiscount
+	int32 ExperiencePercent
+	int32 KamikazePercent
+	int32 BaseCombat
+	enum32_DirectionTypes FacingDirection
+	int32 ImmobileTimer
+
+	bool8 MadeAttack
+	bool8 MadeInterception
+	bool8 PromotionReady
+	bool8 DeathDelay
+	bool8 CombatFocus
+	bool8 Blockading
+	if (Flag > 0)
+	{
+		bool8 AirCombat
+	}
+
+	enum32_PlayerTypes Owner
+	enum32_PlayerTypes CapturingPlayer
+	enum32_UnitTypes UnitType
+	enum32_UnitTypes LeaderUnitType
+
+	struct_IdInfo CombatUnit
+	struct_IdInfo TransportUnit
+
+	int32[NUM_DOMAIN_TYPES:DomainTypes] ExtraDomainModifier
+
+	wstring_type Name
+	string_type ScriptData
+
+	bool8[NUM_PROMOTION_TYPES:PromotionTypes] bHasPromotion
+
+	int32[NUM_TERRAIN_TYPES:TerrainTypes] TerrainDoubleMoveCount
+	int32[NUM_FEATURE_TYPES:FeatureTypes] FeatureDoubleMoveCount
+	int32[NUM_TERRAIN_TYPES:TerrainTypes] ExtraTerrainAttackPercent
+	int32[NUM_TERRAIN_TYPES:TerrainTypes] ExtraTerrainDefensePercent
+	int32[NUM_FEATURE_TYPES:FeatureTypes] ExtraFeatureAttackPercent
+	int32[NUM_FEATURE_TYPES:FeatureTypes] ExtraFeatureDefensePercent
+	int32[NUM_UNIT_COMBAT_TYPES:UnitCombatTypes] ExtraUnitCombatModifier
+}
+
+struct CvUnitAI
+{
+	struct_CvUnit CvUnit 
+
+	uint32 Flag
+
+	int32 Birthmark
+
+	enum32_UnitAITypes UnitAIType
+	int32 AutomatedAbortTurn
+}
+
+// EventAndEventTriggeredData is not defined in the SDK but is introduced here for convenience
+struct EventAndEventTriggeredData
+{
+    enum32_EventTypes EventType
+	struct_EventTriggeredData Data
+}
+
+struct EventTriggeredData
+{
+	int32 Id
+	enum32_EventTriggerTypes Trigger
+	int32 Turn
+	enum32_PlayerTypes Player
+	int32 CityId
+	int32 PlotX
+	int32 PlotY
+	int32 UnitId
+	enum32_PlayerTypes OtherPlayer
+	int32 OtherPlayerCityId
+	enum32_ReligionTypes Religion
+	enum32_CorporationTypes Corporation
+	enum32_BuildingTypes Building
+	wstring_type Text
+	wstring_type GlobalText
+}
+
+struct FVariable
+{
+	enum32_eVariableType Type
+
+	if (Type == eVariableType::FVARTYPE_STRING)
+	{
+		string_type StringValue
+	}
+	elif (Type == eVariableType::FVARTYPE_WSTRING)
+	{
+		wstring_type WStringValue
+	}
+	else
+	{
+		int8[8] UnionValue  // read the maximum size of the union	
+	}
+}
+
+struct GameFooter
+{
+	// Uncompressed data following the zlib deflated game data.  The meaning of this data is
+	// undocumented but may be associated with the Python scripts.  The undocumented bytes continue
+	// until the ChecksumByte
+	hex8[query_reader] UndocumentedFooterBytes
+	
+	// This byte is contained in the savegame checksum.  Its meaning is unknown
+	hex8 ChecksumByte
+	md5_type SavegameChecksum
+}
+
+struct GameHeader
+{
+    // Note: Vanilla Civilization versions start at 100; Warlords at 200; and Beyond the Sword at 300.
+    // assert that the version is BTS.
+	uint32 GameVersion
+	assert(GameVersion >= 300 && GameVersion < 400)
+	string_type RequiredMod
+	md5_type ModMd5
+	uint32 ChecksumDWord
+	string_type LockModifiedAssetsText
+	md5_type LmaMd5_1
+	md5_type LmaMd5_2
+	md5_type LmaMd5_3
+	md5_type LmaMd5_4
+	uint32 CvInitCoreMd5Size
+}
+
+struct IdInfo
+{
+    enum32_PlayerTypes Owner
+	int32 ID
+}
+
+// InvisibleVisibilityCount is not defined in the SDK but is introduced here for convenience.
+struct InvisibleVisibilityCountData
+{
+	int32 Length
+	int16[Length:PlayerTypes] InvisibleVisibilityCount
+}
+
+struct MissionData
+{
+	enum32_MissionTypes MissionType
+	int32 Data1
+	int32 Data2
+	int32 Flags
+	int32 PushTurn
+}
+
+struct OrderData
+{
+	enum32_OrderTypes OrderType
+	int32 Data1
+	int32 Data2
+	bool8 Save
+	hex8[3] AlignmentPad    // VCExpress adds padding to keep struct data aligned on 4-byte boundaries
+}
+
+// PlayerVoteData is not defined in the SDK but is introduced here for convenience
+struct PlayerVoteData
+{
+    enum32_PlayerTypes ID
+	enum32_PlayerVoteTypes Vote
+}
+
+struct PlotExtraCost
+{
+    int32 X
+	int32 Y
+	int32 Cost
+}
+
+struct PlotExtraYield
+{
+    int32 X
+	int32 Y
+	int32_YieldTypes[NUM_YIELD_TYPES:YieldTypes] ExtraYield
+}
+
+struct Savegame
+{
+	struct_GameHeader GameHeader
+
+	struct_CvInitCore CvInitCore
+
+	struct_CvGameAI CvGameAI
+
+	struct_CvMap CvMap
+
+	struct_CvTeamAI[MAX_TEAMS:TeamTypes] CvTeamAI
+
+	struct_CvPlayerAI[MAX_PLAYERS:PlayerTypes] CvPlayerAI
+
+	struct_CvEventReporter CvEventReporter
+
+	struct_GameFooter GameFooter
+}
+
+// ScoreHistoryData is not defined in the SDK but is introduced here for convenience
+struct ScoreHistoryData
+{
+    int32 Turn
+	int32 Score
+}
+
+struct TradeData
+{
+    enum32_TradeableItems ItemType    
+	int32 Data
+	bool8 Offering
+	bool8 Hidden
+	hex8[2] AlignmentPad // VCExpress adds padding to keep struct data aligned on 4-byte boundaries
+}
+
+// UnitClassCostData is not defined in the SDK but is introduced here for convenience
+struct UnitClassCostData
+{
+    enum32_UnitClassTypes UnitClass
+	int32 Cost
+}
+
+// UnitClassPromotionData is not defined in the SDK but is introduced here for convenience
+struct UnitClassPromotionData
+{
+    enum32_UnitClassTypes UnitClass
+	enum32_PromotionTypes Promotion
+}
+
+// UnitCombatPromotionData is not defined in the SDK but is introduced here for convenience
+struct UnitCombatPromotionData
+{
+    enum32_UnitCombatTypes UnitCombat
+	enum32_PromotionTypes Promotion
+}
+
+struct VoteSelectionData
+{
+    int32 ID
+	enum32_VoteSourceTypes VoteSource
+	int32 VoteOptionsLength
+	struct_VoteSelectionSubData[VoteOptionsLength] VoteOptions
+}
+
+struct VoteSelectionSubData
+{
+	enum32_VoteTypes Vote
+	enum32_PlayerTypes Player
+	int32 CityId
+	enum32_PlayerTypes OtherPlayer
+	wstring_type Text
+}
+
+// struct VoteSourceReligion is used in the schema to represent the m_mapVoteSourceReligions
+// hash map as found in CvGame.cpp:
+//     stdext::hash_map<VoteSourceTypes, ReligionTypes> m_mapVoteSourceReligions
+struct VoteSourceReligion
+{
+    enum32_VoteSourceTypes VoteSourceType
+	enum32_ReligionTypes ReligionType
+}
+
+struct VoteTriggeredData
+{
+    int32 ID
+	enum32_VoteSourceTypes VoteSource
+	struct_VoteSelectionSubData VoteOption
+}
+
+struct XYCoords
+{
+    int32 X
+	int32 Y
+}
+	
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// read_keyword
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+read Savegame

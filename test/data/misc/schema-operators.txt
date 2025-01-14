@@ -1,0 +1,25 @@
+// This file contains all operator tokens.  It is used to test the tokenizer to ensure that all operator tokens
+// are correctly parsed.
+
+=
+
++           // Unary plus or addition
+-           // Unary minus or subtraction
+
+*
+/
+%
+
+&&
+||
+!
+
+<           // Less than or start template typename specification
+<=
+==
+>=
+>           // Greater than or end template typename specification
+!=
+
+::          // Scope resolution
+

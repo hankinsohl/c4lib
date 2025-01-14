@@ -1,0 +1,20 @@
+// This file contains all punctuation tokens.  It is used to test the tokenizer to ensure that all punctuation tokens
+// are correctly parsed.  Note that several tokens are ambiguous and will be parsed as their corresponding
+// ambiguous counterparts.
+
+.
+
+:
+;
+
+<       // Tokenized as Token_type::open_angle_bracket
+>       // Tokenized as Token_type::close_angle_bracket
+
+{
+}
+
+[
+]
+
+(
+)

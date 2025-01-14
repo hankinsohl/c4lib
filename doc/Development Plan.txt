@@ -1,0 +1,105 @@
+* Consider boost regex https://www.boost.org/doc/libs/1_86_0/libs/regex/doc/html/boost_regex/intro.html
+  (Doesn't seem to be a hotspot - revisit later.  However, regex is notoriously slow so probably change later)
+=======
+Current Next Steps
+    * Review all .md docs and update to reflect new debug lib; verify that sample translation in README.md reflects
+	  changed GameHeader.HeaderSize field name.
+	* Update API doc to refer to c4recover.
+    * Review c4recover .md docs.  Create repository for it.  If it looks good, make it public.  Make sure release dist
+      stuff is working.	
+	* Create the new repository, c4lib.  
+	* Check on Git sponsership application status.
+	* Configure existing git repository to appear like the one we'll use in earnest.  Download from the current 
+	  repository onto a clean machine and test to see if everything works.  Use GOG if necessary to install Civ4.
+	* Look into how to reset check-in history.  If not possible, wipe local and remote repositories and start fresh
+	* Final test run.  Build exe under clang.  Libs for clang, gcc and msvc.  Initial check-in.
+	* Announce release on civfanatics and on the other civ4 website.
+
+For later consideration:
+	* Google FuzzTest looks promising as a fuzz test runner.  FuzzTest is the successor to libFuzzer. 
+	  https://github.com/google/fuzztest.  Also look into:
+		afl-gcc
+		American fuzzy lop
+		AFLTriage
+		exploitable.py
+	* Make changes to support fuzz testing on whatever platform is best.  Run and fix any issues found.
+	* Try 1-character attribute node-names to see if performance improves (performance improves by 10%).  It's probably
+	  worth while investigating why performance improves (simply writing less characters, or perhaps faster node
+	  lookup, or maybe both).  In spite of the performance improvement, 1-character names makes the info file 
+	  far less easy to understand so I don't think I'll implement this change.  Nonetheless, shorter names (e.g., remove
+	  the leading and trailing double-underscores) could be used.
+	* Look into the zconf.h issue and the hack we made.  Probably there's a better work-around for what we ended up doing.
+	* Consider the following to install boost
+	
+cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
+
+project(CPMExampleBoost)
+
+# ---- Create binary ----
+
+add_executable(CPMExampleBoost main.cpp)
+target_compile_features(CPMExampleBoost PRIVATE cxx_std_17)
+
+# ---- Dependencies ----
+
+include(../../cmake/CPM.cmake)
+
+CPMAddPackage(
+  NAME Boost
+  VERSION 1.86.0 # Versions less than 1.85.0 may need patches for installation targets.
+  URL https://github.com/boostorg/boost/releases/download/boost-1.86.0/boost-1.86.0-cmake.tar.xz
+  URL_HASH SHA256=2c5ec5edcdff47ff55e27ed9560b0a0b94b07bd07ed9928b476150e16b0efc57
+  OPTIONS "BOOST_ENABLE_CMAKE ON" "BOOST_SKIP_INSTALL_RULES ON" # Set `OFF` for installation
+          "BUILD_SHARED_LIBS OFF" "BOOST_INCLUDE_LIBRARIES container\\\;asio" # Note the escapes!
+)
+
+# `Boost::headers` is also valid
+target_link_libraries(CPMExampleBoost PRIVATE Boost::asio Boost::container)
+	
+======================================================================================================================
+
+
+#include <spawn.h>
+extern char **environ;
+(...)
+
+pid_t pid;
+char *argv[] = {
+    "/Applications/Xcode.app/Contents/Developer/usr/bin/opendiff",
+    "/Users/LukeSkywalker/Documents/doc1.rtf",
+    "/Users/LukeSkywalker/Documents/doc2.rtf",
+    NULL
+};
+
+posix_spawn(&pid, argv[0], NULL, NULL, argv, environ);
+waitpid(pid, NULL, 0);
+
+
+#include <Windows.h>
+ 
+void func(TCHAR *input) {
+  STARTUPINFO si = { 0 };
+  PROCESS_INFORMATION pi;
+  si.cb = sizeof(si);
+  if (!CreateProcess(TEXT("any_cmd.exe"), input, NULL, NULL, FALSE,
+                     0, 0, 0, &si, &pi)) {
+    /* Handle error */
+  }
+  CloseHandle(pi.hThread);
+  CloseHandle(pi.hProcess);
+}
+	
+
+	  
+
+	  
+
+	
+    
+
+
+
+ 
+  
+
+ 

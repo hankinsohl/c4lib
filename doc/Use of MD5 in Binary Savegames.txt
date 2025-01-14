@@ -1,0 +1,78 @@
+In case anyone's interested, the following describes how the Civ4 savegame checksum algorithm works.
+============
+The checksum located at the end of a Civ4 savegame file is a 16 byte, MD5 digest in ASCII string format. Since each byte 
+takes 2 characters to encode, the string is 32 characters long.
+
+The Civ4 savegame file layout starts as follows:
+GameVersion - DWORD - little endian value of game version
+RequiredMod - CvString - name of mod required for the game to load. Does not impact the checksum algorithm
+ModMd5 - CvString - MD5 hash for the required mod. Does not impact the checksum algorithm.
+ChecksumDWord - DWORD. This value is zero every time I've watched the game load and its purpose is unknown. It does impact the checksum algorithm (see below).
+LmaString - CvString -string of length 0 unless Lock Modified Assets (LMA) is enabled. If LMA is enabled this string is length 16. I don't know what this string represents.
+LmaMd5_1 - CvString - string of length 0 unless Lock Modified Assets (LMA) is enabled. If LMA is enabled this string is length 32. This is an MD5 hash over asset content.
+LmaMd5_2 - CvString - string of length 0 unless Lock Modified Assets (LMA) is enabled. If LMA is enabled this string is length 32. This is an MD5 hash over asset content.
+LmaMd5_3 - CvString - string of length 0 unless Lock Modified Assets (LMA) is enabled. If LMA is enabled this string is length 32. This is an MD5 hash over asset content.
+LmaMd5_4 - CvString - string of length 0 unless Lock Modified Assets (LMA) is enabled. If LMA is enabled this string is length 32. This is an MD5 hash over asset content.
+CvInitCoreMd5Size - DWORD - number of bytes in Header MD5
+
+The algorithm to generate the checksum is as follows:
+1) Generate an MD5 digest for CvInitCore. Data for the digest starts at CvInitCore and
+   continues for GameHeader.CvInitCoreMd5Size bytes (compressed data begins after this).
+2) Generate an MD5 digest for the compressed game data. This digest excludes the compressed data chunk length fields.
+3) Create a memory stream to hold the data to MD5. The length of the memory stream varies depending on what's to be 
+   hashed. Into the memory stream write the following values:
+* ChecksumDWord (see Civ4 savegame layout in paragraph above)
+* The Civ4 game version as a little-endian, DWORD value.
+* ChecksumByte - this byte is from the savegame file and is located immediately prior to the checksum string at the end of 
+               the savegame (note that strings are saved with a length prefix; ChecksumByte imediately precedes 
+			   the length)
+* LmaString
+* LmaMd5_1
+* LmaMd5_2
+* LmaMd5_3
+* LmaMd5_4
+* Admin password hash - This hash is 0x20 wide string characters long if a password is set, or 0x00 characters long if no password is set. The string length is written first, followed by the wide characters (if the password is set).
+                      All password hashes are in this format.
+** Game password hash
+** Password hash for each possible player - 19 total player password hashes are written.
+* The compressed data MD5, prefixed by its length (0x20 00 00 00) as a little-endian DWORD.
+* The header MD5, prefixed by its length (0x20 00 00 00) as a little-endian DWORD.
+* The "magic" value 0x4D, 0xE6, 0x40, 0xBB. This value is hard-coded in the exe.
+
+Entries marked with double asterisks are assumed. These are hash fields for passwords that I haven't tested yet, but 
+the code path is the same as for the Admin password hash and so what's written to the memory stream is likely the same 
+as for the Admin password hash.
+
+To double-check the algorithm above, I wrote a utility program to calculate the MD5 digest using the algorithm. The 
+utility calculates the checksum and writes it to a copy of the targetted savegame file. Using the utility I've been 
+able to successfully load and run Civ4 savegames modified in a hex editor. I've also been able to successfully 
+generate the checksum for a LMA game.
+
+Some notes and observations...
+Not all of the Civ4 savegame data is covered by the checksum. Initial savegame fields RequiredMod and ModMd5 are not 
+covered, nor is any of the uncompressed data following the zlib-compressed content (other than ChecksumByte and the 
+checksum itself).
+
+If you attempt to load a modified savegame file (e.g., after using a hex editor to change some data), but don't adjust 
+the checksum, 1 of 4 things happens:
+1 - the game loads and seems to run. This indicates that the value you modified wasn't covered by the checksum and 
+    doesn't cause the game to immediately crash. Of course, the game might be unstable at this point.
+2 - the game seg-faults or throws an exception immediately when loading. In this case, you'll see a dialog pop up 
+    stating that the game exited in an unexpected way.
+3 - modification of GameVersion, RequiredMod or ModMd5 fields results in various load failure dialogs assuming that 
+    the change made is consistent with the field type (e.g., you must enter a CvString in the RequiredMod field; 
+	entering a DWORD will misalign the rest of the savegame with the parsing code likely resulting in failure type 2).
+4 - the game simply exits after a while with no dialog. This likely means that you've modified a value covered by 
+    the checksum.
+
+Interestingly, I found that the Civ4 exe prepares a warning message when the savegame checksum fails to pass. However, 
+it does not display the error message. This indicates a bug of some sort that's never been fixed. Also of interest, 
+I believe that the same text associated with checksum mismatch actually is displayed in a dialog if the ModMd5 field 
+is modified with a valid CvString.
+
+Change log:
+9/4/2024 - updated to reflect understanding of several previously unknown fields. Lock Modified Assets savegame 
+           layout documented.
+9/5/2024 - updated to document ChecksumDWordValue and ChecksumByteValue.
+9/6/2024 - updated to document RequiredMod and ValidationText fields.
+9/6/2020(2) - updated to rename the ValidationText field to ModMd5.

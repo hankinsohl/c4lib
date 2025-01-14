@@ -1,0 +1,325 @@
+C4 Schema Grammar
+
+*** PRELIMINARY PRE-ALPHA RELEASE OF THE SCHEMA.  THIS WILL LIKELY CHANGE - AS DEVELOPMENT CONTINUES ***
+
+This file documents the extended BNF grammar used by the Civ4 editor to parse savegames.
+
+Notes:
+1.  Line comments are allowed in the schema.  Line comments begin with two slash characters.  Comments are stripped 
+from the schema prior to lexical analysis and thus are not part of the grammar.
+
+2.  In the production rules, "NULL" is used to signify the empty set.
+
+3.  Index capture is used to obtain one of the array dimensions in a multidimensional array.  The capture_index 
+keyword is used to capture the index of a dimension in the array and is used in a later dimension with the 
+use_capture keyword.  The use_capture keyword is used to reference a different array via a node reference. Index 
+capture is a language concept unique to the schema and thus warrants further explanation. 
+  
+An example follows:
+
+	int32[NUM_PROJECT_TYPES:ProjectTypes] ProjectCount
+	int32[NUM_PROJECT_TYPES:ProjectTypes:capture_index][ProjectCount[use_capture]] ProjectArtTypes
+	
+In this example, ProjectArtTypes is the multidimensional array in which capture_index appears.
+Later in the ProjectArtTypes use_capture is used as an index into a different array, ProjectCount.
+
+When the first dimension index for ProjectArtTypes is 0, 0 is captured, and the size of the second dimension 
+of ProjectArtTypes is ProjectCount[0]. When the first dimension index for ProjectArtTypes is 1, the size of the second 
+dimension of ProjectArtTypes is ProjectCount[1], and so on.
+
+Note that index capture can be used to create an array of arrays of different dimensions.
+
+Index capture is used to generate text output superior to that which would have been produced using for-loops since the
+capture makes clear that a multidimensional array is being created.
+
+4.  The query-reader keyword is used by the parser to determine the size of the undocumented bytes array in the
+savegame footer.  The parser has no means to determine this size on its own and instead relies on a save reader
+to supply the size.  A binary save reader is able to determine this size based on the size of the savegame and
+a text save reader is able to read this size directly from its save.
+
+5.  The starting non-terminal in the grammer is <schema>.
+
+6.  Pratt Parsing (also known as precedence parsing) is used to parse expressions.  Because of this, a BNF grammar was 
+not written for the Pratt Parser.  Insead, a table of supported tokens along with their associativity and precedence was 
+used to develop the expression parser. 
+
+Terminology:
+1.  Block versus statement
+
+	block: 
+	    Implies a brace-enclosed construct consisting of multiple lines.
+	
+	statement: 
+	    Implies single-line construct
+
+	Omission of both block and statement implies both constructs are possible.
+
+2.  Simple versus complex
+
+	simple: 
+	    Refers to a type not composed of other types
+	
+	complex: 
+	    Refers to an aggregate type composed of other types
+
+	Although strings are composed of characters they are considered simple.
+	
+3.  Declaration versus definition
+
+    declaration: 
+	    The schema does not use the term declaration because in the context of read, what would be considered
+	    a declaration in a language like C++ actually causes a variable to be read and assigned a value.
+		
+	definition: 
+		In general, provides the on-disk binary layout for a type and assigns a name to the type.  enumerator definitions
+        are an exception in that an enum definition assigns a name to a set of enumerator values but does not specify
+        the binary layout which may be 8, 16 or 32 bits.		
+
+The grammar is as follows:
+
+<schema> ::= <opt-import-blocks> <definitions> <read-statement>
+
+<opt-import-blocks> ::= <import-block> <opt-import-blocks> | <null>
+<import-block> ::= <import-keyword> <open-brace> <opt-import-statements> <close-brace>
+<opt-import-statements> ::= <import-statement> <opt-import-statements> | <null>
+<import-statement> ::= <enum-import-statement> | <const-import-statement>
+<enum-import-statement> ::= <enum-keyword> <identifier> <xml-path-keyword> <xml-path> 
+    <exact-or-search-path-keyword> <file-path> 
+<const-import-statement> ::= <const-keyword> <identifier>
+
+<definitions> ::= <definition> <opt-definitions>
+<opt-definitions> ::= <definition> <opt-definitions> | <null>
+
+<definition> ::= <alias_type-definition-statement> | <const-definition-statement> | <enum-definition-block> |
+    <struct-definition-block> | <template-definition-block>
+
+<alias_type-definition-statement> ::= <template-name> <alias_type-keyword> <alias_type-name>
+<alias_type-name> ::= <identifier>
+
+<const-definition-statement> ::= <const-keyword> <const-name> <assignment-operator> <const_type-expression>
+<const-name> ::= <identifier>
+
+<enum-definition-block> ::= <enum-keyword> <enum-name> <enum-definition>
+<enum-name> ::= <identifier>
+<enum-definition> ::= <open-brace> <enumerator-definition-statements> <close-brace>
+<enumerator-definition-statements> ::= <enumerator-definition-statement> <opt-enumerator-definition-statements>
+<opt-enumerator-definition-statements> ::= <enumerator-definition-statement>
+    <opt-enumerator-definition-statements> | <null>
+<enumerator-definition-statement> ::= <enumerator> <assignment-operator> <const_type-expression> | <enumerator>
+<enumerator> ::= <identifier>
+
+<struct-definition-block> ::= <struct-keyword> <struct-name> <struct-definition>
+<struct-name> ::= <identifier>
+<struct-definition> ::= <open-brace> <blocks-or-statements> <close-brace>
+
+<template-definition-block> ::= <template-keyword> <template-name> <bracketed-typename> <template-definition>
+<template-name> ::= <identifier>
+<bracketed-typename> ::= <open-angle-bracket> <typename> <close-angle-bracket>
+<typename> ::= <identifier>
+<template-definition> ::= <open-brace> <template-blocks-or-statements> <close-brace>
+
+<blocks-or-statements> ::= <block-or-statement> <opt-blocks-or-statements>
+<block-or-statement> ::= <definition-statement> | <control-block> | <assert-statement>
+<opt-blocks-or-statements> ::= <block-or-statement> <opt-blocks-or-statements> | <null>
+
+<template-blocks-or-statements> ::= <template-block-or-statement> <opt-template-blocks-or-statements>
+<template-block-or-statement> ::= <template-definition-statement> | <control-block> | <assert-statement>
+<opt-template-blocks-or-statements> ::= <template-block-or-statement> <opt-template-blocks-or-statements> | <null>
+
+<template-definition-statement> ::= <complex-typename-type> <typename-variable-name> | <definition-statement> 
+
+<definition-statement> ::= <complex-integer-type> <integer-variable-name> |
+                           <complex-enum-type> <enum-variable-name> | 
+						   <complex-string_type-like-type> <string_type-like-variable-name> |
+						   <complex-struct-type> <struct-variable-name> | 
+						   <complex-template-type> <template-variable-name> 
+
+<instantiating-type> ::= <integer-type> | <enum-type> | <string_type-like-type> | <struct-type>
+
+<complex-integer-type> ::= <integer-type> <opt-array-suffix>
+<complex-enum-type> ::= <enum-type> <opt-array-suffix>
+<complex-string_type-like-type> ::= <string_type-like-type> <opt-array-suffix>
+<complex-struct-type> ::= <struct-type> <opt-array-suffix>
+<complex-template-type> ::= <template-type> <bracketed-type> <opt-array-suffix>
+<complex-typename-type> ::= <typename-type> <opt-array-suffix>
+
+<integer-type> ::= <bool-type> | <hex_type-type> | <int-type> | <uint_type-type>
+<bool-type> ::= bool(8|16|32)
+<hex_type-type> ::= hex_type(8|16|32)
+<int-type> ::= int(8|16|32)
+<uint_type-type> ::= uint_type(8|16|32)
+
+<enum-type> ::= enum(8|16|32)_[a-zA-Z][_a-zA-Z0-9]{0,120}
+
+<string_type-like-type> ::= <string_type-type> | <wstring_type-type> | <md5_type-type>
+<string_type-type> ::= string_type
+<wstring_type-type> ::= wstring_type
+<md5_type-type> ::= md5_type
+ 
+<struct-type> ::= struct_[a-zA-Z][_a-zA-Z0-9]{0,120}
+
+<template-type> ::= template_[a-zA-Z][_a-zA-Z0-9]{0,120}
+<bracketed-type> ::= <open-angle-bracket> <instantiating-type> <close-angle-bracket>
+<instantiating-type> ::= <simple-type>
+
+<typename-type> ::= <identifier>
+
+<opt-array-suffix> ::= <array-suffix> <opt-array-suffix> | <null>
+<array-suffix> ::= <open-square-bracket> <use-capture-node-reference> <opt-enum-bind> <close-square-bracket> | 
+				   <open-square-bracket> <query-reader-keyword> <close-square-bracket> |
+                   <open-square-bracket> <expression> <opt-enum-bind> <opt-index-capture> <close-square-bracket> 
+
+// Note: A use-capture-node-reference is a node-reference in which the use_capture keyword appears.  The  
+// production for <use-capture-node-reference> is part of Pratt Parsing.                   
+
+<opt-enum-bind> ::= <colon> <enum-name> | <null>
+
+<opt-index-capture> ::= <colon> <index-capture> | <null>
+<index-capture> ::= <capture-index-keyword>
+
+<index-capture-variable-name> ::= <identifier>
+<integer-variable-name> ::= <identifier>
+<enum-variable-name> ::= <identifier>
+<string_type-like-variable-name> ::= <identifier>
+<struct-variable-name> ::= <identifier> 
+<template-variable-name> ::= <identifier>
+<typename-variable-name> ::= <identifier>
+
+<control-block> ::= <if-elif-else-block> | <for-loop-block>
+
+<if-elif-else-block> ::= <if-block> <opt-elif-blocks> <opt-else-block>
+<if-block> ::= <if-keyword> <open-parenthesis> <if-expression> <close-parenthesis> <conditional-block>                 
+<conditional-block> ::= <open-brace> <opt-blocks-or-statements> <close-brace>				   
+<opt-elif-blocks> ::= <elif-block> <opt-elif-blocks> | <null>
+<elif-block> ::= <elif-keyword> <open-parenthesis> <if-expression> <close-parenthesis> <conditional-block> 
+<opt-else-block> ::= <else-block> | <null>
+<else-block> ::= <else-keyword> <conditional-block> 
+
+<for-loop-block> ::= <for-keyword> <open-parenthesis> <for-assignment> <semicolon> 
+                         <for-continuation> <semicolon> 
+                         <for-update> <close-parenthesis> 
+						 <open-brace> <opt_blocks-or-statements> <close-brace>
+
+<for-assignment> ::= <identifier> <assignment-operator> <expression>
+<for-continuation> ::= <expression>
+<for-update> ::= <identifier> <assignment-operator> <expression>
+
+<assert-statement> ::= <assert-keyword> <open-parenthesis> <expression> <close-parenthesis>
+
+<read-statement> ::= <read-keyword> <struct-name>
+
+<file-path> ::= <string_type-literal>
+<xml-path> ::= <string_type-literal>
+
+<string_type-literal> ::= "([^"]){0, 118}"
+
+<identifier> ::= [a-zA-Z][_a-zA-Z0-9]{0,120}
+
+<exact-or-search-path-keyword> ::= <exact-path-keyword> | <search-path-keyword>
+
+<alias_type-keyword> ::= alias_type
+<assert-keyword> ::= assert
+<capture-index-keyword> ::= capture_index
+<const-keyword> ::= const
+<elif-keyword> ::= elif
+<else-keyword> ::= else
+<enum-keyword> ::= enum
+<exact-path-keyword> ::= exact_path
+<for-keyword> ::= for
+<if-keyword> ::= if
+<import-keyword> ::= import
+<query-reader-keyword> ::= query_reader
+<read-keyword> ::= read
+<search-path-keyword> ::= search_path
+<struct-keyword> ::= struct
+<template-keyword> ::= template
+<use-capture-keyword> := use_capture
+<xml-path-keyword> ::= xml_path
+
+<colon> ::= :
+<semicolon> ::= ;
+
+<open-angle-bracket> ::= "<"
+<close-angle-bracket> ::= ">"
+
+<open-brace> ::= {
+<close-brace> ::= }
+
+<open-parenthesis> ::= (
+<close-parenthesis> ::= )
+
+<open-square-bracket> ::= [
+<close-square-bracket> ::= ]
+
+<assignment-operator> ::= =
+
+<if-expression> ::= <expression>
+<const-expression> ::= <expression>
+<expression> ::= Evaluated by Pratt Parser
+
+<null> ::= NULL
+
+A Pratt Parser was developed to parse expressions.  The tokens recognized by the expression parser are shown in the 
+table below.  The expression parser converts all results to signed integers.  Logical truth is converted to 1; 
+logical falsehood to 0.
+
+Table 1: Tokens Recognized By The Pratt Parser
+==============================================
+Token						Symbol or
+Name						RegEx							Precedence				Associativity 
+----------------------------------------------------------------------------------------------------
+Numeric Literal				[+\-]?(0x|0X)[0-9a-fA-F]+		N/A						N/A		
+							[+\-]?[0-9]+
+
+identifier					[_a-zA-Z][_a-zA-Z0-9]*			N/A						N/A
+
+node-reference              See note 3                      N/A                     N/A
+
+enumerator-reference        See note 4                      N/A                     N/A
+
+Negation					-								90						Right
+Unary plus					+								90						Right
+Logical Not					!								90						Right
+
+Multiplication				*								80						Left
+Division					/								80						Left	
+Modulus						%								80						Left
+
+Addition					+								70						Left
+Subtraction					-								70						Left
+
+Less Than					<								60						Left
+Less Than Or Equal			<=								60						Left
+Greater Than Or Equal		>=								60						Left
+Greater Than				>								60						Left
+
+Equal To					==								50						Left
+Not Equal To				!=								50						Left
+
+Logical And					&&								40						Left
+
+Logical Or					||								30						Left
+
+Notes:
+1.  Numeric literals and identifiers are limited to 120 characters in length.
+2.  Precedence and associativity of operators are identical to C++.
+3.  A node_reference is composed of a sequence of tokens and has the following associated production rules which 
+    the expression parser uses to process the references:
+
+	<use-capture-node-reference> ::= <node-name> <open-square-bracket> <use-capture-keyword> <close-square-bracket> 
+
+	<node-reference> ::= <node-name> <opt-node-path>
+	<node-name> ::= identifier
+
+	<opt-node-path> ::= <path-separator> <array-node-name-or-node-name> <opt-node-path> | <null>
+	<path-separator> ::= <dot>
+	<array-node-name-or-node-name> ::= <array-node-name> | <node-name>
+	<array-node-name> ::= <open-square-bracket> <expression> <close-square-bracket>
+						  
+
+	<dot> ::= .
+	
+4.  An enumerator reference is composed of a sequence of tokens and has the following associated production rules:
+
+    <enumerator-reference> ::= <enum-name><scope-resolution-operator><enumerator>
+	<scope-resolution-operator> := ::

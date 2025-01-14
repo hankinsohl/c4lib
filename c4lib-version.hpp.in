@@ -1,0 +1,12 @@
+// Copyright (c) 2025 By David "Hankinsohl" Hankins.
+// This software is licensed under the MIT License.
+// Created by Hankinsohl on 01/10/2025.
+
+#pragma once
+
+namespace c4lib::constants {
+
+// C4 Library Version
+inline constexpr const char* c4lib_version{"${C4LIB_VERSION}"};
+
+} // namespace c4lib::constants

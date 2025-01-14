@@ -1,0 +1,20 @@
+I've finally had time to run Civ4 under a debugger to figure out why straight forward decompression of save game data 
+isn't working. 
+For those who are interested, details follow:
+
+When writing compressed data to a save game file, Civ4 writes the data in chunks. The size of the compressed data chunk
+is written first, followed by the compressed data itself. Each chunk is usually 64K in size, except for the last chunk.
+Following the last chunk, a terminator size of 0 is written.
+
+For example, let's say that compressed data for a game consists of 2 full 64K chunks and a last chunk of size F29D. The save
+game file starting at where compressed data is written would look something like this (actual data values of course depend
+on the game itself; also the initial offset into the save game will vary from game to game):
+Code:
+Offset            Size            Data            Remarks
+0x00000B35        00 00 10 00     78 9C E4 BD     Note the 78 9C zlib magic at the start of the data.
+0x00010B39        00 00 10 00     6D 72 3E CC     Offset is B35 + 64K + 4 bytes for the size field.
+0x00020B3D        9D F2 00 00     F6 9B 63 8E     Offset is 10B39 + 64K + 4 bytes for the size field.
+
+Change log:
+9/4/2024 - Change to reflect that first compressed chunk isn't always 64K in length. For Lock Modified Assets games, 
+the first chuck is (sometimes? or perhaps always?) shorter.

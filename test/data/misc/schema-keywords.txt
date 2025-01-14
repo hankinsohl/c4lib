@@ -1,0 +1,60 @@
+// This file contains all keyword tokens.  It is used to test the tokenizer to ensure that all keyword tokens
+// are correctly parsed.
+
+// 0
+alias
+
+// 1
+assert
+
+// 2
+capture_index
+
+// 3
+const
+
+// 4
+elif
+
+// 5
+else
+
+// 6
+enum
+
+// 7
+exact_path
+
+// 8
+for
+
+// 9
+if
+
+// 10
+import
+
+// 11
+read
+
+// 12
+search_path
+
+// 13
+struct
+
+// 14
+template
+
+// 15
+use_capture
+
+// 16
+xml_path
+
+// 17
+query_reader
+
+// 18 will be Token_type::meta_eos
+
+

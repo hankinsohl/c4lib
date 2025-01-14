@@ -1,0 +1,108 @@
+Civilization 4 XML files are read using the algorithm described below.  Some details, such as the use of schema for XML 
+validation are omitted.  This description is Windows-specific; path names will change somewhat for Macintosh.  The 
+description focuses on XML files that have an impact on the binary layout of Civilization 4 save game files; XML files 
+not affected the save game layout might be treated somewhat differently (I have not tested such files,
+hence the caveat).  Finally, a modded Civ4 DLL can of course make changes to the XML loading procedure described below.
+
+1.  XML loading begins by recursively scanning the following directories, in the order listed, for XML files:
+
+		* Mod: %CIV4_INSTALL_ROOT%/Mods/%MOD_NAME%/Assets/XML
+		* CustomAssets: %MY_GAMES%/Beyond the Sword/CustomAssets/XML 
+		* BTS: %CIV4_INSTALL_ROOT%/Assets/XML
+		* Warlords: %CIV4_INSTALL_ROOT%/../Warlords/Assets/XML
+		* Vanilla: %CIV4_INSTALL_ROOT%/../Assets/XML
+		
+	In the list above, I've enclosed values with % to simplify names.  Substitute the actual path to the game's 
+	installation root directory for	%CIV4_INSTALL_ROOT%, the name of the mod being loaded for %MOD_NAME%, and the 
+	path to your "My Games" directory for %MY_GAMES%.  If a Mod is not being loaded, the corresponding reference 
+	to "Mod:" is skipped.	
+	
+2.  Once an XML file is found in Step 1 above, an internal Civilization 4 component which the SDK refers to as the 
+    "File Manager" stores the file name and its full path.  If that same file name is found later in the search, it 
+	is ignored.  That is, the first occurrence of a name takes precedence, masking later occurrences of the same name.  
+	For example, if	CustomAssets/XML/GameInfo/CIV4SeaLevelInfo.xml is found, CIV4SeaLevelInfo.xml would be stored 
+	and its path would be set to CustomAssets/XML/GameInfo.  Later in the search, if
+	CIV4SeaLevelInfo.xml were found, say at %CIV4_INSTALL_ROOT%/../Warlords/Assets/XML/GameInfo/CIV4SeaLevelInfo.xml, 
+	the later occurrence would be ignored.
+	
+3.  Civilization 4 then loads XML files as controlled by the Civilization 4 DLL.  Only those files specifically 
+    mentioned in the DLL are loaded.  Stray XML files not referenced in the DLL are unused.
+	
+4.  When referring to an XML file, the DLL uses a path name relative to the parent XML directory such as "GameInfo".  
+    For example, to load CIV4SeaLevelInfo.xml, the DLL would request that the File Manager load CIV4SeaLevelInfo.xml 
+	using the relative path GameInfo.  The File Manager would then attempt to load the requested file using the 
+	file names it stored in Step 1.  Both the file name and relative path need to match for loading to succeed.
+	
+5.  Two main functions are used in the DLL to load XML files with impact on save game layout: 
+    CvXMLLoadUtility::ReadGlobalDefines and CvXMLLoadUtility::LoadGlobalClassInfo.
+	
+    ReadGlobalDefines reads simple variables (e.g., ints, floats, etc.) from GlobalDefinesAlt.xml and then from 
+	GlobalDefines.xml with values in GlobalDefinesAlt.xml taking precedence. 
+	
+	LoadGlobalClassInfo is used to read complex variables, corresponding to C++ classes/structs/enums.  Each such 
+	class instance is stored in a vector.  For example, the content of Civ4SeaLevelInfo.xml, after removing 
+	comments, is:
+	
+	<Civ4SeaLevelInfo xmlns="x-schema:CIV4GameInfoSchema.xml">
+	<SeaLevelInfos>
+		<SeaLevelInfo>
+			<Type>SEALEVEL_LOW</Type>
+			<Description>TXT_KEY_SEALEVEL_LOW</Description>
+			<iSeaLevelChange>-8</iSeaLevelChange>
+		</SeaLevelInfo>
+		<SeaLevelInfo>
+			<Type>SEALEVEL_MEDIUM</Type>
+			<Description>TXT_KEY_SEALEVEL_MEDIUM</Description>
+			<iSeaLevelChange>0</iSeaLevelChange>
+		</SeaLevelInfo>
+		<SeaLevelInfo>
+			<Type>SEALEVEL_HIGH</Type>
+			<Description>TXT_KEY_SEALEVEL_HIGH</Description>
+			<iSeaLevelChange>6</iSeaLevelChange>
+		</SeaLevelInfo>
+	  </SeaLevelInfos>
+    </Civ4SeaLevelInfo>
+	
+	LoadGlobalClassInfo reads this file, and creates three instances of CvSeaLevelInfo, one for each <SeaLevelInfo> 
+	node in the XML.
+	
+6.  Some Mods augment the XML loading process described above using something called "ModularLoading."  If 
+    ModularLoading is enabled for a mod, Step 4 is modified to add the following additional sub-steps:
+	4a.  XML loading proceeds as normal, using the file name and relative path as previously described.
+	4b.  Once 4a is done, another search for XML files occurs.  This time, the original file name is prefixed with 
+	     "*_" where * matches any legal file name character.  For example, if the original request was for 
+		 CIV4SeaLevelInfo.xml, the wild card file name would be *_CIV4SeaLevelInfo.xml, and the wildcard name would 
+		 match file names such as Minoa_CIV4SeaLevelInfo.xml. When importing simple types, modular loading is applied 
+		 to GlobalDefines.xml, but not to GlobalDefinesAlt.xml.	 
+	4c.  The wildcard name generated in Step 4b is used to search for files in the Mod's "Modules" directory.  
+	     For example, if the Mod name is "Minoans", the Modules directory would be 
+		 %CIV4_INSTALL_ROOT%/Mods/Minoans/Modules.  When performing the file search in Step 4c, the search is 
+		 recursive.  All directories and their children are searched using the wildcard file name.
+    4d.  For each matching XML file found in 4c, the corresponding XML is read.  Values read add to any existing 
+	     definitions, overwriting existing values only when <DefineName> (in the case of simple types) or <Type> 
+		 (in the case of complex types) already exist.  For example, if CIV4GameInfoSchema.xml were read as described 
+		 in Step 5 and then Minoan_CIV4GameInfoSchema.xml were found, having the following content:
+		 
+		<Civ4SeaLevelInfo xmlns="x-schema:Minoan_CIV4GameInfoSchema.xml">
+		<SeaLevelInfos>
+			<SeaLevelInfo>
+				<Type>SEALEVEL_MEDIUM</Type>
+				<Description>TXT_KEY_SEALEVEL_MEDIUM</Description>
+				<iSeaLevelChange>1</iSeaLevelChange>
+			</SeaLevelInfo>
+			<SeaLevelInfo>
+				<Type>SEALEVEL_MEDIUM_HIGH</Type>
+				<Description>TXT_KEY_SEALEVEL_HIGH</Description>
+				<iSeaLevelChange>2</iSeaLevelChange>
+			</SeaLevelInfo>
+		  </SeaLevelInfos>
+		</Civ4SeaLevelInfo>		
+
+        the existing CvSeaLevelInfo with type SEALEVEL_MEDIUM would be replaced by the new node with the same type; 
+		a new CvSeaLevelInfo instance would be created for the new node corresponding to SEALEVEL_MEDIUM_HIGH, and 
+		the existing CvSeaLevelInfo instance for SEALEVEL_HIGH would be unchanged.	
+	
+		
+		
+	
+	

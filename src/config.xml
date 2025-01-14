@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Instructions:
+    This file can be used to specify options via the command line option -USE_CONFIG_FILE.
+
+    Options are as follows:
+        Name                        Value               Meaning
+        LOAD_SAVE                   <filename>          Name of a .CivBeyondSwordSave to load.  You must either load a BTS save or an info file.
+        LOAD_INFO                   <filename>          Name of an info file to load.  You must either load a BTS save or an info file.
+        SCHEMA                      <filename>          Name of the schema file.  Defaults to BTS.Schema.  Required to load a BTS save.
+        BTS_INSTALL_DIR             <directory>         Name of root BTS install directory.  Required to load a BTS save.
+        CUSTOM_ASSETS_DIR           <directory>         Name of BTS custom assets directory.  Required to load a BTS save.
+        MOD_NAME                    <name>              If the BTS save is for a mod, the mod name.  Do not use unless the BTS save is for a mod.
+        USE_MODULAR_LOADING         [0|1]               Set to 1 if modular loading is used.  Do not use unless the save uses modular loading.
+        WRITE_TRANSLATION           <filename>          Write a text file translation of the save to filename.
+        WRITE_INFO                  <filename>          Write an info file for the save to filename.  Info files can be edited to change a save.
+        WRITE_SAVE                  <filename>          Write a BTS save to filename.  Use this option to convert an info file to a BTS save.
+        OMIT_OFFSET_COLUMN          [0|1]               Set to 1 to omit the offset column when generating translation files.
+        OMIT_HEX_COLUMN             [0|1]               Set to 1 to omit the hex column when generating translation files.
+        OMIT_ASCII_COLUMN           [0|1]               Set to 1 to omit the ASCII column when generating translation files.
+        LOG                         [0|1]               Set to 1 to log diagnostic messages to the log file.
+        DEBUG_OUTPUT_DIR            <directory>         Name of directory into which debug files are written.  If not specified, the current directory is used.
+        DEBUG_WRITE_BINARIES        [0|1]               Write various binary files generated internally by the library.
+        DEBUG_WRITE_IMPORTS         [0|1]               Write imported enums and constants.
+
+    In most cases, you'll want to start by loading a Beyond the Sword (BTS) save.  Use LOAD_SAVE to specify the name of the save you want to load.
+    In the config section below, edit the entry for LOAD_SAVE and replace "*your-username*" with your Windows username and replace "*save-name*"
+    with the name of the save you want to load.
+
+    To load a save, the following options are required: SCHEMA, BTS_INSTALL_DIR and CUSTOM_ASSETS_DIR.  MOD_NAME and USE_MODULAR_LOADING may also
+    be used, but are not required, and should not be specified in most cases.  The values for SCHEMA, BTS_INSTALL_DIR and CUSTOM_ASSETS_DIR can
+    be set as follows:
+
+    SCHEMA
+    c4edit is installed in the same directory as its schema file.  Unless you have moved c4edit or the schema file, "BTS.schema" will work.
+
+    BTS_INSTALL_DIR
+    Set this option to the value where you installed BTS.  Some example values are as follows:
+
+        If you installed BTS from CD: "C:\Program Files (x86)\Firaxis Games\Sid Meier's Civilization IV\Beyond the Sword"
+        If you installed BTS from Good Old Games (GOG): "C:\Program Files (x86)\GOG Galaxy\Games\Civilization IV Complete\Civ4\Beyond the Sword"
+        If you installed BTS from Steam: "C:\Program Files (x86)\Steam\steamapps\common\Sid Meier's Civilization IV Beyond the Sword\Beyond the Sword"
+
+    In the config section below, the value for Steam is used.  Change this value as described above, if needed.
+
+    CUSTOM_ASSETS_DIR
+    Set the value of this option to the directory BTS uses to store custom assets.  In the config section below, replace "*your-username*" with
+    your Windows username.
+
+    You'll likely want to generate a so-called "translation" of your save.  A translation is a human-readable, text representation of the save
+    and looks similar to the view that a debugger might use.  Set the value of WRITE_TRANSLATION to the name of a file where you want to store
+    the translation.  Change the value "Translation.txt" below as appropriate.
+-->
+<config>
+    <option name="LOAD_SAVE" value="C:\Users\*your-username*\Documents\My Games\beyond the sword\Saves\single\*save-name*"/>
+    <option name="WRITE_TRANSLATION" value="Translation.txt"/>
+    <option name="SCHEMA" value="BTS.schema"/>
+    <option name="BTS_INSTALL_DIR"
+            value="C:\Program Files (x86)\Steam\steamapps\common\Sid Meier's Civilization IV Beyond the Sword\Beyond the Sword"/>
+    <option name="CUSTOM_ASSETS_DIR" value="C:\Users\*your-username*\Documents\My Games\beyond the sword\CustomAssets"/>
+    <option name="LOG" value="1"/>
+</config>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+    <option name="BOOL_OPTION_TRUE" value="1"/>
+    <option name="BOOL_OPTION_FALSE" value="0"/>
+
+    <option name="INT_OPTION_NEGATIVE" value="-1"/>
+    <option name="INT_OPTION_ZERO" value="0"/>
+    <option name="int_option_positive" value="1"/>
+
+    <option name="text_option_1" value="1"/>
+    <option name="text_option_2" value="*& Hello !?_+"/>
+</config>
